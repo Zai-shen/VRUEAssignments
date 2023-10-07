@@ -49,38 +49,40 @@ namespace VRUEAssignments.Managers
         private IEnumerator Spawn()
         {
             List<Transform> structures = new();
-            
+            float spawnDelay = 0.1f;
+
             float groundOffset = StructSize.y / 2f;
             float height = 0f;
             int pos = -1;
 
             for (int i = 0; i < Amount; i++)
             {
-                StructureInitializer temp = null;
+                Vector3 formationPos = default;
                 float currentY = groundOffset + (StructSize.y * height);
-                pos++;
-                switch (pos)
+
+                switch (++pos)
                 {
                     case 0:
-                        temp = new StructureInitializer(_target.position + new Vector3(0,currentY,0), StructSize, structTypeToUse);
+                        formationPos = _target.position + new Vector3(0, currentY, 0);
                         break;
                     case 1:
-                        temp = new StructureInitializer(_target.position + new Vector3(StructSize.x,currentY,StructSize.z), StructSize, structTypeToUse);
+                        formationPos = _target.position + new Vector3(StructSize.x,currentY,StructSize.z);
                         break;
                     case 2:
-                        temp = new StructureInitializer(_target.position + new Vector3(0,currentY,StructSize.z * 2), StructSize, structTypeToUse);
+                        formationPos = _target.position + new Vector3(0,currentY,StructSize.z * 2);
                         break;
                     case 3:
-                        temp = new StructureInitializer(_target.position + new Vector3(-StructSize.x,currentY,StructSize.z), StructSize, structTypeToUse);
+                        formationPos = _target.position + new Vector3(-StructSize.x,currentY,StructSize.z);
                         pos = -1;
                         height++;
                         break;
                 }
                 
+                StructureInitializer temp = new StructureInitializer(formationPos, StructSize, structTypeToUse);
                 temp.sTransform.SetParent(Container);
                 structures.Add(temp.sTransform);
                 
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForSeconds(spawnDelay*=0.8f);
             }
 
             yield return null;

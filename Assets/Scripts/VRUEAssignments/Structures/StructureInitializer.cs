@@ -10,27 +10,33 @@ namespace Unity.Template.VR.VRUEAssignments.Structures
         
         public StructureInitializer()
         {
-            Init(structTypeToUse);
+            InitTransform(structTypeToUse);
+            AddStructureComponent();
         }
         
         public StructureInitializer(PrimitiveType structType)
         {
             structTypeToUse = structType;
-            Init(structTypeToUse);
+            InitTransform(structTypeToUse);
+            AddStructureComponent();
         }
 
-        public StructureInitializer(Vector3 position, Vector3 size = default, PrimitiveType structType = PrimitiveType.Cube)
+        public StructureInitializer(Vector3 position, Vector3 size, PrimitiveType structType = PrimitiveType.Cube)
         {
-            Init(structType);
-            sTransform.localScale = size == default ? Vector3.one : size;
-            sTransform.position = position;
+            InitTransform(position,size,structType);
+            AddStructureComponent();
         }
         
-        private void Init(PrimitiveType structType)
+        private void InitTransform(PrimitiveType structType)
         {
             sTransform = GameObject.CreatePrimitive(structType).transform;
-
-            AddStructureComponent();
+        }
+        
+        private void InitTransform(Vector3 position, Vector3 size, PrimitiveType structType)
+        {
+            sTransform = GameObject.CreatePrimitive(structType).transform;
+            sTransform.localScale = size == default ? Vector3.one : size;
+            sTransform.position = position;
         }
 
         private void AddStructureComponent()
@@ -39,10 +45,10 @@ namespace Unity.Template.VR.VRUEAssignments.Structures
 
             switch (percentage)
             {
-                case > 50:
+                case > 35:
                     sTransform.AddComponent<Structure>();
                     break;
-                case > 25:
+                case > 10:
                     sTransform.AddComponent<MassiveStructure>();
                     break;
                 case > 0:

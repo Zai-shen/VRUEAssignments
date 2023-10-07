@@ -6,7 +6,7 @@ namespace Unity.Template.VR.VRUEAssignments.Structures
     {
         protected new StructureInteractionType InteractionType = StructureInteractionType.Massive;
 
-        protected override void SetName()
+        protected override void SetIdentifiers()
         {
             transform.name += " - Massive";
         }
@@ -29,7 +29,10 @@ namespace Unity.Template.VR.VRUEAssignments.Structures
 
         protected override void HandleCollision(Collision coll)
         {
-            Debug.Log($"New massive collision with: {coll.transform.tag}");
+            if (coll.transform.CompareTag("Throwable"))
+            {
+                Debug.Log($"New massive collision with: {coll.transform.tag}");
+            }
         }
     }
 }

@@ -1,12 +1,18 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Unity.Template.VR.VRUEAssignments.Structures
 {
     public class ExplodingStructure : Structure
     {
+        [SerializeField] private float ExplosionRadius = 3.0f;
+        [SerializeField] private float ExplosionPower = 1300.0f;
+        
         protected new StructureInteractionType InteractionType = StructureInteractionType.Explode;
 
-        protected override void SetName()
+        private bool _didExplode;
+        
+        protected override void SetIdentifiers()
         {
             transform.name += " - Exploding";
         }
@@ -18,7 +24,30 @@ namespace Unity.Template.VR.VRUEAssignments.Structures
 
         protected override void HandleCollision(Collision coll)
         {
-            Debug.Log($"New exploding collision with: {coll.transform.tag}");
+            if (coll.transform.CompareTag("Throwable") && !_didExplode)
+            {
+                Debug.Log($"New exploding collision with: {coll.transform.tag}");
+
+                Explode(coll);
+            }
+        }
+
+        private void Explode(Collision coll)
+        {
+            Vector3 explosionPos = coll.transform.position;
+            Collider[] colliders = Physics.OverlapSphere(explosionPos, ExplosionRadius);
+            foreach (Collider hit in colliders)
+            {
+                Rigidbody rb = hit.GetComponent<Rigidbody>();
+
+                if (rb != null)
+                {
+                    rb.AddExplosionForce(ExplosionPower, explosionPos, ExplosionRadius, 0f);
+                }
+            }
+
+            _didExplode = true;
+            gameObject.SetActive(false);
         }
     }
 }
