@@ -3,22 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Template.VR.VRUEAssignments.Structures;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VRUEAssignments.Utils;
 
 namespace VRUEAssignments.Managers
 {
     public class StructureSpawner : UnitySingleton<StructureSpawner>
     {
+        public Action OnSpawned;
+        
+        [HideInInspector] public List<GameObject> InstantiatedObjects = new();
+
         [SerializeField] private StructureType StructType = StructureType.Cube;
         private PrimitiveType structTypeToUse;
         
-        [SerializeField][Range(1,100)] private int Amount;
+        [Range(1,100)]
+        [SerializeField] private int Amount;
         [SerializeField] private Vector3 StructSize = Vector3.one;
 
         [SerializeField] private Transform Container;
         private Transform _target;
-        
-        private List<GameObject> _instantiatedObjects = new();
         
         protected override void Awake()
         {
@@ -56,14 +60,14 @@ namespace VRUEAssignments.Managers
 
         private void CleanUpPrevious()
         {
-            if (_instantiatedObjects != null && _instantiatedObjects.Count != 0)
+            if (InstantiatedObjects != null && InstantiatedObjects.Count != 0)
             {
-                for (int index = 0; index < _instantiatedObjects.Count; index++)
+                for (int index = 0; index < InstantiatedObjects.Count; index++)
                 {
-                    Destroy(_instantiatedObjects[index]);
+                    Destroy(InstantiatedObjects[index]);
                 }
 
-                _instantiatedObjects.Clear();
+                InstantiatedObjects.Clear();
             }
         }
 
@@ -100,11 +104,12 @@ namespace VRUEAssignments.Managers
                 
                 StructureInitializer temp = new StructureInitializer(formationPos, StructSize, structTypeToUse);
                 temp.sTransform.SetParent(Container);
-                _instantiatedObjects.Add(temp.sTransform.gameObject);
+                InstantiatedObjects.Add(temp.sTransform.gameObject);
                 
                 yield return new WaitForSeconds(spawnDelay*=0.8f);
             }
 
+            OnSpawned?.Invoke();
             yield return null;
         }
     }
