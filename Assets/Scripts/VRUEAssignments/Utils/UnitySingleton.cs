@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace VRUEAssignments.Utils
 {
-    public class UnitySingleton<T> : MonoBehaviour
-        where T : Component
+    public abstract class UnitySingleton<T> : MonoBehaviour
+        where T : UnitySingleton<T>
     {
         private static T _instance;
         public static T Instance {  get { return _instance; } 

@@ -18,6 +18,8 @@ namespace VRUEAssignments.Managers
         [SerializeField] private Transform Container;
         private Transform _target;
         
+        private List<GameObject> _instantiatedObjects = new();
+        
         protected override void Awake()
         {
             base.Awake();
@@ -41,14 +43,32 @@ namespace VRUEAssignments.Managers
             }
         }
 
-        private void Start()
+        public void SetAmount(int amount)
         {
+            Amount = amount;
+        }
+        
+        public void SpawnStructures()
+        {
+            CleanUpPrevious();
             StartCoroutine(Spawn());
+        }
+
+        private void CleanUpPrevious()
+        {
+            if (_instantiatedObjects != null && _instantiatedObjects.Count != 0)
+            {
+                for (int index = 0; index < _instantiatedObjects.Count; index++)
+                {
+                    Destroy(_instantiatedObjects[index]);
+                }
+
+                _instantiatedObjects.Clear();
+            }
         }
 
         private IEnumerator Spawn()
         {
-            List<Transform> structures = new();
             float spawnDelay = 0.1f;
 
             float groundOffset = StructSize.y / 2f;
@@ -80,7 +100,7 @@ namespace VRUEAssignments.Managers
                 
                 StructureInitializer temp = new StructureInitializer(formationPos, StructSize, structTypeToUse);
                 temp.sTransform.SetParent(Container);
-                structures.Add(temp.sTransform);
+                _instantiatedObjects.Add(temp.sTransform.gameObject);
                 
                 yield return new WaitForSeconds(spawnDelay*=0.8f);
             }
