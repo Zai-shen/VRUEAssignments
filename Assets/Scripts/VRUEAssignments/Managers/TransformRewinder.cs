@@ -39,8 +39,8 @@ namespace VRUEAssignments.Managers
 
         private void GetTransforms()
         {
+            _transformDestinations.Clear();
             _transformGOs = _structureSpawner.InstantiatedObjects;
-            _recording = true;
         }
 
         private void Record(InputAction.CallbackContext ctx)
