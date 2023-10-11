@@ -26,7 +26,7 @@ namespace Unity.Template.VR.VRUEAssignments.Structures
         {
             if (coll.transform.CompareTag("Throwable") && !_didExplode)
             {
-                Debug.Log($"New exploding collision with: {coll.transform.tag}");
+                // Debug.Log($"New exploding collision with: {coll.transform.tag}");
 
                 Explode(coll);
             }

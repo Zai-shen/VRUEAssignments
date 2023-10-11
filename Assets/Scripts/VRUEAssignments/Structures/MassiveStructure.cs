@@ -31,7 +31,7 @@ namespace Unity.Template.VR.VRUEAssignments.Structures
         {
             if (coll.transform.CompareTag("Throwable"))
             {
-                Debug.Log($"New massive collision with: {coll.transform.tag}");
+                // Debug.Log($"New massive collision with: {coll.transform.tag}");
             }
         }
     }

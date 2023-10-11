@@ -73,7 +73,7 @@ namespace Unity.Template.VR.VRUEAssignments.Structures
         {
             if (coll.transform.CompareTag("Throwable"))
             {
-                Debug.Log($"New default collision with: {coll.transform.tag}");
+                // Debug.Log($"New default collision with: {coll.transform.tag}");
             }
         }
     }
