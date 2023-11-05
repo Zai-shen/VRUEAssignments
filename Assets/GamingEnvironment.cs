@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,8 +18,13 @@ public class GamingEnvironment : MonoBehaviour
     {
         _xrGeneralGrabTransformer = GetComponent<XRGeneralGrabTransformer>();
     }
-    
-    
+
+
+    private void Update()
+    {
+        UIManager.Instance.UpdateGamingEnvironmentScale(transform.localScale.x);
+    }
+
     public void AllowScaling(bool allowed)
     {
         _scalingAllowed = allowed;
