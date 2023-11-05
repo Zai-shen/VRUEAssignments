@@ -13,6 +13,7 @@ public class UIManager : UnitySingleton<UIManager>
     public GamingEnvironment AGamingEnvironment;
     public Slider GEScaleSlider;
     public TextMeshProUGUI HolesHitLabel;
+    public TextMeshProUGUI CueHitsLabel;
     public TextMeshProUGUI TimeLabel;
 
 
@@ -74,11 +75,16 @@ public class UIManager : UnitySingleton<UIManager>
     public void UpdateTime()
     {
         GameStatistics.TimeElapsed = (System.DateTime.UtcNow - GameStatistics.StartTime).Seconds;
-        TimeLabel.SetText("Time: " + GameStatistics.TimeElapsed.ToString());
+        TimeLabel.SetText("Time: " + GameStatistics.TimeElapsed.ToString() + "s");
     }
 
     private void Update()
     {
         UpdateTime();
+    }
+
+    public void UpdateCueHits()
+    {
+        CueHitsLabel.SetText("Hits: " + GameStatistics.CueHits.ToString());
     }
 }

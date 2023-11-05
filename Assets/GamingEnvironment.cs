@@ -41,10 +41,10 @@ public class GamingEnvironment : MonoBehaviour
 
     private void ResetGameStatistics()
     {
-        GameStatistics.StartTime = System.DateTime.UtcNow;
-        GameStatistics.HolesHit = 0;
+        GameStatistics.Reset();
         UIManager.Instance.UpdateHolesHit();
         UIManager.Instance.UpdateTime();
+        UIManager.Instance.UpdateCueHits();
     }
 
     private void ResetBallPositions()
