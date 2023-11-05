@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class Hole : MonoBehaviour
 {
-    public float expulsionForce = 3f;
+    public float ExpulsionForce = 3f;
+    public float SplineFollowSpeed = 4f;
     
     private SplineComputer _splineComputer;
     private GameObject _currentCollisionGO;
@@ -22,6 +23,7 @@ public class Hole : MonoBehaviour
         {
             _currentCollisionGO = collision.gameObject;
             
+            
             Rigidbody rb = _currentCollisionGO.GetComponent<Rigidbody>();
             rb.isKinematic = true;
 
@@ -29,6 +31,7 @@ public class Hole : MonoBehaviour
             sp.position = _currentCollisionGO.transform.position;
             
             SplineFollower splineFollower = _currentCollisionGO.AddComponent<SplineFollower>();
+            splineFollower.followSpeed = SplineFollowSpeed;
             splineFollower.spline = _splineComputer;
             splineFollower.onEndReached += SetBallOutside;
         }
@@ -41,7 +44,7 @@ public class Hole : MonoBehaviour
         rb.useGravity = true;
 
         Vector3 direction = (_currentCollisionGO.transform.position - transform.position).normalized;
-        rb.AddForce(direction * expulsionForce, ForceMode.Impulse);
+        rb.AddForce(direction * ExpulsionForce, ForceMode.Impulse);
 
         SplineFollower splineFollower = _currentCollisionGO.GetComponent<SplineFollower>();
         splineFollower.enabled = false;

@@ -47,4 +47,9 @@ public class UIManager : MonoBehaviour
     {
         AGamingEnvironment.Restart();
     }
+
+    public void AllowScaling(bool allowed)
+    {
+        AGamingEnvironment.AllowScaling(allowed);
+    }
 }
