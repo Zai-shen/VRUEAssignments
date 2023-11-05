@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Transformers;
+using VRUEAssignments.Managers;
 
 public class GamingEnvironment : MonoBehaviour
 {
@@ -35,6 +36,15 @@ public class GamingEnvironment : MonoBehaviour
     public void Restart()
     {
         ResetBallPositions();
+        ResetGameStatistics();
+    }
+
+    private void ResetGameStatistics()
+    {
+        GameStatistics.StartTime = System.DateTime.UtcNow;
+        GameStatistics.HolesHit = 0;
+        UIManager.Instance.UpdateHolesHit();
+        UIManager.Instance.UpdateTime();
     }
 
     private void ResetBallPositions()

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Dreamteck.Splines;
 using UnityEngine;
+using VRUEAssignments.Managers;
 
 public class Hole : MonoBehaviour
 {
@@ -34,6 +35,9 @@ public class Hole : MonoBehaviour
             splineFollower.followSpeed = SplineFollowSpeed;
             splineFollower.spline = _splineComputer;
             splineFollower.onEndReached += SetBallOutside;
+
+            GameStatistics.HolesHit++;
+            UIManager.Instance.UpdateHolesHit();
         }
     }
 

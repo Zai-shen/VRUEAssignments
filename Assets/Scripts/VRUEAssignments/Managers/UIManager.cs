@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Template.VR.VRUEAssignments.Structures;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,10 +12,13 @@ public class UIManager : UnitySingleton<UIManager>
 {
     public GamingEnvironment AGamingEnvironment;
     public Slider GEScaleSlider;
-    
+    public TextMeshProUGUI HolesHitLabel;
+    public TextMeshProUGUI TimeLabel;
+
+
     private void Start()
     {
-        //SpawnStructures();
+        GameStatistics.StartTime = System.DateTime.UtcNow;
     }
 
     public void SetCurrentThrowable(ThrowableType index)
@@ -59,5 +64,21 @@ public class UIManager : UnitySingleton<UIManager>
     public void UpdateGamingEnvironmentScale(float localScaleX)
     {
         GEScaleSlider.value = localScaleX;
+    }
+
+    public void UpdateHolesHit()
+    {
+        HolesHitLabel.SetText("Holes Hit: " + GameStatistics.HolesHit.ToString());
+    }
+
+    public void UpdateTime()
+    {
+        GameStatistics.TimeElapsed = (System.DateTime.UtcNow - GameStatistics.StartTime).Seconds;
+        TimeLabel.SetText("Time: " + GameStatistics.TimeElapsed.ToString());
+    }
+
+    private void Update()
+    {
+        UpdateTime();
     }
 }
