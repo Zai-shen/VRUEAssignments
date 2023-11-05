@@ -6,6 +6,8 @@ using VRUEAssignments.Managers;
 
 public class UIManager : MonoBehaviour
 {
+    public GamingEnvironment AGamingEnvironment;
+
     private void Start()
     {
         //SpawnStructures();
@@ -39,5 +41,10 @@ public class UIManager : MonoBehaviour
     public void SpawnStructures()
     {
         StructureSpawner.Instance.SpawnStructures();
+    }
+
+    public void Restart()
+    {
+        AGamingEnvironment.Restart();
     }
 }
