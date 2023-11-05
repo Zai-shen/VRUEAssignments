@@ -8,6 +8,12 @@
 	* Bonus:
 		* "Play-back time"
 * Ass2:
+	* Space Pool
+	* Animated Hands
+	* World UI
+	* Hand UI
+	*Bonus:
+		* "Touchable UI"
 
 ## Tech Stack
 
