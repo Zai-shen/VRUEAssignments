@@ -1,14 +1,15 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Transactions;
 using UnityEngine;
 using UnityEngine.XR;
+using static UnityEngine.Rendering.DebugUI;
 
-public class RunningMovement : MonoBehaviour
+public class AlternativeRunningMovement: MonoBehaviour
 {
 
     public GameObject characterControllerGameObject;
-
     private CharacterController characterController;
 
     private InputDevice leftController;
@@ -20,14 +21,10 @@ public class RunningMovement : MonoBehaviour
     private Vector3 controllerVelocityRight = new Vector3(0.0f, 0.0f, 0.0f);
 
     private float currentVelocity = 0;
-    private float minVelocity = 0;
-    private float maxVelocity = 0;
+    private Queue<float> movingAverageVelocityQueue = new Queue<float>();
+    private int queueSize = 5;
+    private float controllerAverageVelocity;
 
-    private bool isPerformingRunning;
-
-    float increaseTimeElapsed;
-    float decreaseTimeElapsed;
-    float lerpDuration = 1f;
 
     // Start is called before the first frame update
     void Start()
@@ -47,6 +44,12 @@ public class RunningMovement : MonoBehaviour
         // find hmd
         desiredCharacteristics = InputDeviceCharacteristics.HeadMounted;
         InitializeInputDeviceCharacteristics(desiredCharacteristics, ref hmd);
+
+        // init queue
+        for (int i = 0; i < queueSize; i++)
+        {
+            movingAverageVelocityQueue.Enqueue(0f);
+        }
     }
 
     private void InitializeInputDeviceCharacteristics(InputDeviceCharacteristics inputDeviceCharacteristics, ref InputDevice device)
@@ -69,31 +72,22 @@ public class RunningMovement : MonoBehaviour
             {
                 controllerVelocityRight = velocityR;
                 controllerVelocityLeft = velocityL;
-                if (IsRunning() && !isPerformingRunning)
+                controllerAverageVelocity = (Math.Abs(controllerVelocityLeft.y) + Math.Abs(controllerVelocityRight.y)) / 2 * Time.deltaTime * 3;
+                if (IsRunning())
                 {
-                    Debug.Log("Start performing running");
-                    isPerformingRunning = true;
-                    var controllerAverageVelocity = (Math.Abs(controllerVelocityLeft.y) + Math.Abs(controllerVelocityRight.y)) / 2;
-                    minVelocity = currentVelocity;
-                    maxVelocity = controllerAverageVelocity * Time.deltaTime * 3;
-                    lerpDuration = Math.Abs(minVelocity - maxVelocity) * 10;
-
-                    Debug.Log("Max velocity is: " + maxVelocity);
-                    Debug.Log("Min velocity is: " + minVelocity);
-                    Debug.Log("Lerp duration is: " + lerpDuration);
+                    Debug.Log("I am running");
+                    WriteToQueue(controllerAverageVelocity);
 
                 }
                 else if (IsJumping())
                 {
-                    isPerformingRunning = false;
+                    
                     Debug.Log("I am jumping!");
                     // TODO implement jumping
                 }
-                else
-                {
-                    isPerformingRunning = false;
-                }
-
+            } else
+            {
+                StartCoroutine(WaitAndWriteToQueue());
             }
         }
 
@@ -101,7 +95,9 @@ public class RunningMovement : MonoBehaviour
         {
             hmdRotation = rotation;
         }
-        currentVelocity = getUpdatedVelocityValue();
+
+        StartCoroutine(calcVelocityFromMovingAvg());
+        //Debug.Log("Current velocity moving average: " + currentVelocity.ToString());
         updateCharacterMovement(currentVelocity);
     }
 
@@ -109,45 +105,35 @@ public class RunningMovement : MonoBehaviour
     {
         Vector3 direction = hmdRotation * new Vector3(0.0f, 0.0f, velocity);
         direction.Set(direction.x, 0, direction.z);
-        characterController.Move(direction);
+        // TODO problem: need to use a gravity force 
+       characterController.Move(direction);
     }
 
-    private float getUpdatedVelocityValue()
+    private void WriteToQueue(float value)
     {
-        if (!isPerformingRunning)
+        movingAverageVelocityQueue.Dequeue();
+        movingAverageVelocityQueue.Enqueue(value);
+    }
+    private IEnumerator WaitAndWriteToQueue()
+    {
+        controllerAverageVelocity -= 0.001f;
+
+        if (controllerAverageVelocity < 0)
         {
-            if (currentVelocity > 0 && decreaseTimeElapsed < lerpDuration)
-            {
-                // smoothly decreasing speed
-                var newVelocity = Mathf.Lerp(maxVelocity, 0, decreaseTimeElapsed / lerpDuration);
-                //Debug.Log("Decreasing velocity with t value " + decreaseTimeElapsed / lerpDuration + " to " + currentVelocity);
-                decreaseTimeElapsed += Time.deltaTime;
-                return newVelocity;
-            }
-            else
-            {
-                decreaseTimeElapsed = 0;
-                return 0;
-            }
+            controllerAverageVelocity = 0;
         }
-        else {
-            if (increaseTimeElapsed < lerpDuration)
-            {
-                // smoothly increasing speed
-                // TODO instead of increasing from 0 to run velocity increase from old velocity to new velocity
-                var newVelocity = Mathf.Lerp(minVelocity, maxVelocity, increaseTimeElapsed / lerpDuration);
-                //Debug.Log("Increasing velocity with t value " + increaseTimeElapsed / lerpDuration + " to " + currentVelocity);
-                increaseTimeElapsed += Time.deltaTime;
-                return newVelocity;
-            } else
-            {
-                increaseTimeElapsed = 0;
-                isPerformingRunning = false;
-                Debug.Log("velocity reached " + currentVelocity);
-                Debug.Log("End performing acceleration.");
-                return currentVelocity;
-            }
-        } 
+        WriteToQueue(controllerAverageVelocity);
+        yield return new WaitForSeconds(0.5f);
+    }
+    private IEnumerator calcVelocityFromMovingAvg()
+    {
+        var sum = 0f;
+        foreach (var value in movingAverageVelocityQueue)
+        {
+            sum += value;
+        }
+        currentVelocity = sum / movingAverageVelocityQueue.Count;
+        yield return currentVelocity;
     }
 
     private bool IsJumping()
