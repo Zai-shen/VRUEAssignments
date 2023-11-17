@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Transactions;
 using UnityEngine;
 using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit.AffordanceSystem.Receiver.Primitives;
 using static UnityEngine.Rendering.DebugUI;
 
 public class AlternativeRunningMovement: MonoBehaviour
@@ -21,9 +22,12 @@ public class AlternativeRunningMovement: MonoBehaviour
     private Vector3 controllerVelocityRight = new Vector3(0.0f, 0.0f, 0.0f);
 
     private float currentVelocity = 0;
+    private float jumpVelocity = 0;
     private Queue<float> movingAverageVelocityQueue = new Queue<float>();
-    private int queueSize = 5;
+    private int queueSize = 50;
     private float controllerAverageVelocity;
+
+    private float gravity = -1f;
 
 
     // Start is called before the first frame update
@@ -79,11 +83,12 @@ public class AlternativeRunningMovement: MonoBehaviour
                     WriteToQueue(controllerAverageVelocity);
 
                 }
-                else if (IsJumping())
+                else if (IsJumping() && characterController.isGrounded)
                 {
                     
                     Debug.Log("I am jumping!");
-                    // TODO implement jumping
+                    Debug.Log("Setting velocity to " + jumpVelocity);
+                    jumpVelocity += Mathf.Sqrt(-0.05f * gravity);
                 }
             } else
             {
@@ -104,9 +109,17 @@ public class AlternativeRunningMovement: MonoBehaviour
     private void updateCharacterMovement(float velocity)
     {
         Vector3 direction = hmdRotation * new Vector3(0.0f, 0.0f, velocity);
-        direction.Set(direction.x, 0, direction.z);
-        // TODO problem: need to use a gravity force 
-       characterController.Move(direction);
+        if (!characterController.isGrounded)
+        {
+            jumpVelocity += gravity * Time.deltaTime;
+        }
+        else if (jumpVelocity < 0.0f)
+        {
+            jumpVelocity = 0;
+        }
+        direction.Set(direction.x, jumpVelocity, direction.z);
+        Debug.Log("Velocity is " + direction);
+        characterController.Move(direction);
     }
 
     private void WriteToQueue(float value)
@@ -123,7 +136,7 @@ public class AlternativeRunningMovement: MonoBehaviour
             controllerAverageVelocity = 0;
         }
         WriteToQueue(controllerAverageVelocity);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
     }
     private IEnumerator calcVelocityFromMovingAvg()
     {
