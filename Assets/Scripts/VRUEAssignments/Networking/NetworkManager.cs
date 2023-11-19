@@ -13,9 +13,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     [SerializeField]
     private Vector3 _additiveSpawnOffset = new Vector3(10,0,0);
-    
-    [SerializeField] 
-    private Vector3 _currentSpawnOffset = new Vector3(0, 0, 0);
+     
+    public Vector3 _currentSpawnOffset = new Vector3(0, 0, 0);
     
     [SerializeField] 
     private string role = "host";
