@@ -557,7 +557,7 @@ GameObject:
   - component: {fileID: 983714507}
   - component: {fileID: 983714506}
   m_Layer: 0
-  m_Name: CueHitsLabel
+  m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -603,7 +603,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Hits: '
+  m_text: Position
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -700,6 +700,26 @@ CapsuleCollider:
   m_Height: 1.7
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!1 &1039371454 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7245831491940676419, guid: 6ea00bea07dba8149b0dc4b146346b26,
+    type: 3}
+  m_PrefabInstance: {fileID: 1484621271}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1039371461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1039371454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a4b76c8689bdae449366b841b9f8049, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  XROrigin: {fileID: 1554666777}
+  ANetworkManager: {fileID: 1605675718}
 --- !u!1 &1052217737
 GameObject:
   m_ObjectHideFlags: 0
@@ -1242,8 +1262,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3019168017663223731, guid: 6ea00bea07dba8149b0dc4b146346b26,
         type: 3}
+      propertyPath: m_text
+      value: Reset
+      objectReference: {fileID: 0}
+    - target: {fileID: 3019168017663223731, guid: 6ea00bea07dba8149b0dc4b146346b26,
+        type: 3}
       propertyPath: m_fontSize
-      value: 15.45
+      value: 8.95
       objectReference: {fileID: 0}
     - target: {fileID: 3019168017663223731, guid: 6ea00bea07dba8149b0dc4b146346b26,
         type: 3}
@@ -1269,11 +1294,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1039371461}
     - target: {fileID: 7245831491940676417, guid: 6ea00bea07dba8149b0dc4b146346b26,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Restart
+      value: DoResetPosition
+      objectReference: {fileID: 0}
+    - target: {fileID: 7245831491940676417, guid: 6ea00bea07dba8149b0dc4b146346b26,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: ResetPosition, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7245831491940676418, guid: 6ea00bea07dba8149b0dc4b146346b26,
         type: 3}
@@ -2641,6 +2671,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1554666775}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1605675718 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6978463625424408498, guid: 502f1ded4a96528488bbf77bbb447451,
+    type: 3}
+  m_PrefabInstance: {fileID: 2042140719}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c0363225c6227140b62011d925114f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1672020923
 PrefabInstance:
   m_ObjectHideFlags: 0
