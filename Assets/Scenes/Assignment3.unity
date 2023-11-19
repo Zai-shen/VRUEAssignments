@@ -1483,6 +1483,16 @@ PrefabInstance:
       propertyPath: m_Center.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3127728407712097239, guid: 895f6f3c2d334633b5800312285058d2,
+        type: 3}
+      propertyPath: m_SlopeLimit
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3127728407712097239, guid: 895f6f3c2d334633b5800312285058d2,
+        type: 3}
+      propertyPath: m_StepOffset
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 3127728407712097246, guid: 895f6f3c2d334633b5800312285058d2,
         type: 3}
       propertyPath: m_PositionInput.m_Reference
@@ -2536,6 +2546,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1554666775}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1554666790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1001201247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3a68fde6fc8fc344957a48e82957cbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1605675718 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6978463625424408498, guid: 502f1ded4a96528488bbf77bbb447451,
@@ -2916,6 +2938,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1984918393}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1984918395 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 602606370548609412, guid: 08199c26b27e994409a1cfee0e075b56,
+    type: 3}
+  m_PrefabInstance: {fileID: 1984918393}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 414064478b2eada4399b15bf574b216a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2024743786
 GameObject:
   m_ObjectHideFlags: 0
@@ -2959,6 +2993,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NetworkManager
       objectReference: {fileID: 0}
+    - target: {fileID: 6978463625424408498, guid: 502f1ded4a96528488bbf77bbb447451,
+        type: 3}
+      propertyPath: timerUI
+      value: 
+      objectReference: {fileID: 1984918395}
     - target: {fileID: 6978463625424408498, guid: 502f1ded4a96528488bbf77bbb447451,
         type: 3}
       propertyPath: loaderAnimation

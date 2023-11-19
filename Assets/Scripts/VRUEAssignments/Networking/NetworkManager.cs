@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -24,6 +25,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     [Tooltip("The UI Loader Anime")] [SerializeField]
     private LoaderAnimation loaderAnimation;
+
+    [SerializeField]
+    private ScoreboardText timerUI;
 
     #endregion
 
@@ -252,6 +256,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         SpawnRoad();
         
         loaderAnimation.StopLoaderAnimation();
+        timerUI.StartDisplaying();
     }
 
     private void UpdateSpawnOffset()

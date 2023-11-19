@@ -18,6 +18,11 @@ public class ScoreboardText : MonoBehaviour
     {
         isTimeRunning = false;
         timeText.SetText("Time: 0s");
+        
+    }
+
+    public void StartDisplaying()
+    {
         StartCoroutine(DisplayReadySetGo());
     }
 
@@ -27,7 +32,6 @@ public class ScoreboardText : MonoBehaviour
         if (isTimeRunning)
         {
             var timeElapsed = System.DateTime.UtcNow - startTime;
-            Debug.Log(timeElapsed);
             GameStatistics.TimeElapsed = (timeElapsed).Seconds;
             timeText.SetText("Time: " + timeElapsed.Seconds.ToString() + "s");
         }
