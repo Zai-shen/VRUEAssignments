@@ -16,7 +16,6 @@ public class ScoreboardText : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameStatistics.StartTime = startTime;
         isTimeRunning = false;
         timeText.SetText("Time: 0s");
         StartCoroutine(DisplayReadySetGo());
@@ -28,8 +27,9 @@ public class ScoreboardText : MonoBehaviour
         if (isTimeRunning)
         {
             var timeElapsed = System.DateTime.UtcNow - startTime;
+            Debug.Log(timeElapsed);
             GameStatistics.TimeElapsed = (timeElapsed).Seconds;
-            timeText.SetText("Time: " + timeElapsed + "s");
+            timeText.SetText("Time: " + timeElapsed.ToString() + "s");
         }
     }
 
@@ -40,6 +40,8 @@ public class ScoreboardText : MonoBehaviour
         readyText.SetText("Set");
         yield return new WaitForSeconds(1);
         readyText.SetText("Go!");
+        //GameStatistics.StartTime = startTime;
+        startTime = System.DateTime.UtcNow;
         isTimeRunning = true;
        
     }
