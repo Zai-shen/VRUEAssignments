@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
-public class NetworkedPlayer : MonoBehaviourPun
+public class Character : MonoBehaviourPun
 {
     public Transform Root;
     public Transform Head;
