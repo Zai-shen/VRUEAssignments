@@ -50,7 +50,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		{
 			if (loaderAnimation==null)
 			{
-				Debug.LogError("<Color=Red><b>Missing</b></Color> loaderAnimation Reference.",this);
+				Debug.LogError("<Color=red><b>Missing</b></Color> loaderAnimation Reference.",this);
 			}
 
 			// #Critical
@@ -154,7 +154,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		/// </remarks>
 		public override void OnJoinRandomFailed(short returnCode, string message)
 		{
-			LogFeedback("<Color=Red>OnJoinRandomFailed</Color>: Next -> Create a new Room");
+			LogFeedback("<color=red>OnJoinRandomFailed</color>: Next -> Create a new Room");
 			Debug.Log("PUN Basics Tutorial/Launcher:OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
 
 			// #Critical: we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
@@ -167,7 +167,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		/// </summary>
 		public override void OnDisconnected(DisconnectCause cause)
 		{
-			LogFeedback("<Color=Red>OnDisconnected</Color> "+cause);
+			LogFeedback("<color=red>OnDisconnected</color> "+cause);
 			Debug.LogError("PUN Basics Tutorial/Launcher:Disconnected");
 
 			// #Critical: we failed to connect or got disconnected. There is not much we can do. Typically, a UI system should be in place to let the user attemp to connect again.
@@ -189,7 +189,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		/// </remarks>
 		public override void OnJoinedRoom()
 		{
-			LogFeedback("<Color=Green>OnJoinedRoom</Color> with "+PhotonNetwork.CurrentRoom.PlayerCount+" Player(s)");
+			LogFeedback("<color=green>OnJoinedRoom</color> with "+PhotonNetwork.CurrentRoom.PlayerCount+" Player(s)");
 			Debug.Log("PUN Basics Tutorial/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.\nFrom here on, your game would be running.");
 		
 			// #Critical: We only load if we are the first player, else we rely on  PhotonNetwork.AutomaticallySyncScene to sync our instance scene.
@@ -202,6 +202,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 				/// PhotonNetwork.LoadLevel("PunBasics-Room for 1");
 
 			}
+			
+			loaderAnimation.StopLoaderAnimation();
 		}
 
 		#endregion
