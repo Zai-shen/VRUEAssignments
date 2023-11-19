@@ -29,7 +29,7 @@ public class ScoreboardText : MonoBehaviour
             var timeElapsed = System.DateTime.UtcNow - startTime;
             Debug.Log(timeElapsed);
             GameStatistics.TimeElapsed = (timeElapsed).Seconds;
-            timeText.SetText("Time: " + timeElapsed.ToString() + "s");
+            timeText.SetText("Time: " + timeElapsed.Seconds.ToString() + "s");
         }
     }
 
@@ -40,7 +40,6 @@ public class ScoreboardText : MonoBehaviour
         readyText.SetText("Set");
         yield return new WaitForSeconds(1);
         readyText.SetText("Go!");
-        //GameStatistics.StartTime = startTime;
         startTime = System.DateTime.UtcNow;
         isTimeRunning = true;
        
