@@ -238,9 +238,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }else if (users == 2)
         {
             role = ROLE_MEMBER;
+            UpdateSpawnOffset();
         }
         else
         {
+            UpdateSpawnOffset();
+            UpdateSpawnOffset();
             role = ROLE_OBSERVER;
         }
 
@@ -248,7 +251,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         SpawnPlayer();
         SpawnRoad();
-        UpdateSpawnOffset();
         
         loaderAnimation.StopLoaderAnimation();
     }
