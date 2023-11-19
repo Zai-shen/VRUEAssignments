@@ -80,3 +80,6 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 ProjectSettings/RiderScriptEditorPersistedState.asset
+
+# git lfs weird tmp files
+lfs/tmp/*

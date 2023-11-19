@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Transactions;
 using UnityEngine;
 using UnityEngine.XR;
-using UnityEngine.XR.Interaction.Toolkit.AffordanceSystem.Receiver.Primitives;
 using static UnityEngine.Rendering.DebugUI;
 
 public class AlternativeRunningMovement: MonoBehaviour
@@ -35,7 +34,17 @@ public class AlternativeRunningMovement: MonoBehaviour
     {
         characterController = characterControllerGameObject.GetComponent<CharacterController>();
         characterController.detectCollisions = true;
+        InitVRControllers();
 
+        // init queue
+        for (int i = 0; i < queueSize; i++)
+        {
+            movingAverageVelocityQueue.Enqueue(0f);
+        }
+    }
+
+    private void InitVRControllers()
+    {
         // find left controller
         var desiredCharacteristics = InputDeviceCharacteristics.HeldInHand | InputDeviceCharacteristics.Left | InputDeviceCharacteristics.Controller;
         InitializeInputDeviceCharacteristics(desiredCharacteristics, ref leftController);
@@ -48,12 +57,6 @@ public class AlternativeRunningMovement: MonoBehaviour
         // find hmd
         desiredCharacteristics = InputDeviceCharacteristics.HeadMounted;
         InitializeInputDeviceCharacteristics(desiredCharacteristics, ref hmd);
-
-        // init queue
-        for (int i = 0; i < queueSize; i++)
-        {
-            movingAverageVelocityQueue.Enqueue(0f);
-        }
     }
 
     private void InitializeInputDeviceCharacteristics(InputDeviceCharacteristics inputDeviceCharacteristics, ref InputDevice device)
@@ -69,6 +72,10 @@ public class AlternativeRunningMovement: MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!leftController.isValid || !rightController.isValid)
+        {
+            InitVRControllers();
+        }
         if (leftController.TryGetFeatureValue(CommonUsages.deviceVelocity, out var velocityL)
             && rightController.TryGetFeatureValue(CommonUsages.deviceVelocity, out var velocityR))
         {
