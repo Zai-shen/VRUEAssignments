@@ -8,7 +8,6 @@ public class ResetPosition : MonoBehaviour
 
     public NetworkManager ANetworkManager;
 
-    [ContextMenu("DoResetPosition")]
     public void DoResetPosition()
     {
         XROrigin.transform.position = ANetworkManager._currentSpawnOffset;
