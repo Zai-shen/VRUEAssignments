@@ -12,11 +12,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	    [SerializeField]
 	    private string nick = "host";
 
-	    [Tooltip("The Ui Text to inform the user about the connection progress")]
-		[SerializeField]
-		private TMPro.TextMeshProUGUI feedbackText;
-
-		[Tooltip("The maximum number of players per room")]
+	    [Tooltip("The maximum number of players per room")]
 		[SerializeField]
 		private byte maxPlayersPerRoom = 4;
 
@@ -74,9 +70,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		/// </summary>
 		public void Connect()
 		{
-			// we want to make sure the log is clear everytime we connect, we might have several failed attempted if connection failed.
-			feedbackText.SetText("");
-
 			// keep track of the will to join a room, because when we come back from the game we will get a callback that we are connected, so we need to know what to do then
 			isConnecting = true;
 			
@@ -112,12 +105,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		void LogFeedback(string message)
 		{
 			// we do not assume there is a feedbackText defined.
-			if (feedbackText == null) {
+			if (UIManager.Instance == null) {
 				return;
 			}
 
 			// add new messages as a new line and at the bottom of the log.
-			feedbackText.text += System.Environment.NewLine+message;
+			//feedbackText.text += System.Environment.NewLine+message;
+			UIManager.Instance.DisplayUIMessage(System.Environment.NewLine + message);
 		}
 
         #endregion
