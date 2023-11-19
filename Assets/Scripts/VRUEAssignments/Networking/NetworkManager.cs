@@ -10,6 +10,12 @@ using UnityEngine.UI;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
     #region Private Serializable Fields
+
+    [SerializeField]
+    private Vector3 _additiveSpawnOffset = new Vector3(10,0,0);
+    
+    [SerializeField] 
+    private Vector3 _currentSpawnOffset = new Vector3(0, 0, 0);
     
     [SerializeField] 
     private string role = "host";
@@ -32,6 +38,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     [Tooltip("The prefab to use for representing the player")]
     [SerializeField]
     private GameObject playerPrefab;
+    
+    [Tooltip("The prefab to use for representing the road")]
+    [SerializeField]
+    private GameObject roadPrefab;
     
     /// <summary>
     /// Keep track of the current process. Since connection is asynchronous and is based on several callbacks from Photon, 
@@ -125,9 +135,26 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             {
                 Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
                 // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-                PhotonNetwork.Instantiate("Prefabs/Core/" + this.playerPrefab.name, new Vector3(0f,5f,0f), Quaternion.identity, 0);
+                Vector3 anitCollisionOffset = new Vector3(0f, 5f, 0f);
+                PhotonNetwork.Instantiate("Prefabs/Core/" + this.playerPrefab.name,  _currentSpawnOffset + anitCollisionOffset, Quaternion.identity, 0);
             }else{
                 Debug.LogFormat("Ignoring instantiation in {0} as we already have a player!", SceneManagerHelper.ActiveSceneName);
+            }
+        }
+    }
+
+    private void SpawnRoad()
+    {
+        if (roadPrefab == null) {
+            Debug.LogError("<color=red><b>Missing</b></color> roadPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
+        } else {
+            if (PhotonNetwork.InRoom)
+            {
+                Debug.LogFormat("We are Instantiating LocalRoad from {0}", SceneManagerHelper.ActiveSceneName);
+                // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
+                PhotonNetwork.Instantiate("Prefabs/Environment/" + this.roadPrefab.name,  _currentSpawnOffset, Quaternion.identity, 0);
+            }else{
+                Debug.LogFormat("Ignoring instantiation in {0} as we already have a road!", SceneManagerHelper.ActiveSceneName);
             }
         }
     }
@@ -220,8 +247,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Debug.Log($"We are {role}");
 
         SpawnPlayer();
+        SpawnRoad();
+        UpdateSpawnOffset();
         
         loaderAnimation.StopLoaderAnimation();
+    }
+
+    private void UpdateSpawnOffset()
+    {
+        _currentSpawnOffset += _additiveSpawnOffset;
     }
 
     #endregion

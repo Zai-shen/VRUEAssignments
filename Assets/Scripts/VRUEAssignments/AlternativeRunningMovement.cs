@@ -118,7 +118,7 @@ public class AlternativeRunningMovement: MonoBehaviour
             jumpVelocity = 0;
         }
         direction.Set(direction.x, jumpVelocity, direction.z);
-        Debug.Log("Velocity is " + direction);
+        // Debug.Log("Velocity is " + direction);
         characterController.Move(direction);
     }
 

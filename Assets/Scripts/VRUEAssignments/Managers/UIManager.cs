@@ -94,7 +94,10 @@ public class UIManager : UnitySingleton<UIManager>
 
     private void Update()
     {
-        UpdateTime();
+        if (TimeLabel != null)
+        {
+            UpdateTime();
+        }
     }
 
     public void UpdateCueHits()
