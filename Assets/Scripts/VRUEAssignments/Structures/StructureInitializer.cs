@@ -1,7 +1,7 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
 
-namespace Unity.Template.VR.VRUEAssignments.Structures
+namespace VRUEAssignments.Structures
 {
     public class StructureInitializer
     {

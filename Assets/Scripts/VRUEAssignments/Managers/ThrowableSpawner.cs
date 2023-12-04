@@ -2,10 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
-using Unity.Template.VR.VRUEAssignments.Structures;
 using UnityEngine;
 using UnityEngine.Serialization;
 using VRUEAssignments.Utils;
+using VRUEAssignments.XR;
 
 namespace VRUEAssignments.Managers
 {

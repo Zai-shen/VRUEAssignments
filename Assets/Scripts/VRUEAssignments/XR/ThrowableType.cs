@@ -1,4 +1,4 @@
-﻿namespace Unity.Template.VR.VRUEAssignments.Structures
+﻿namespace VRUEAssignments.XR
 {
     public enum ThrowableType
     {

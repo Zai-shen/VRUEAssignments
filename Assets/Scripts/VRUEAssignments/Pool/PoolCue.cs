@@ -1,49 +1,50 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using VRUEAssignments.Managers;
-using XRController = UnityEngine.InputSystem.XR.XRController;
 
-public class PoolCue : MonoBehaviour
+namespace VRUEAssignments.Pool
 {
-    public ActionBasedController LeftController;
-    public ActionBasedController RightController;
-    public float CoolDown = 0.5f;
-    private List<string> _ballsOnCooldown = new();
+    public class PoolCue : MonoBehaviour
+    {
+        public ActionBasedController LeftController;
+        public ActionBasedController RightController;
+        public float CoolDown = 0.5f;
+        private List<string> _ballsOnCooldown = new();
     
-    private void OnCollisionEnter(Collision collision)
-    {
-        Transform collisionT = collision.transform;
-        
-        if (collisionT.CompareTag("PoolBall") && !IsOnCooldown(collisionT.name))
+        private void OnCollisionEnter(Collision collision)
         {
-            GameStatistics.CueHits++;
-            UIManager.Instance.UpdateCueHits();
+            Transform collisionT = collision.transform;
+        
+            if (collisionT.CompareTag("PoolBall") && !IsOnCooldown(collisionT.name))
+            {
+                GameStatistics.CueHits++;
+                UIManager.Instance.UpdateCueHits();
 
-            HapticFeedback();
+                HapticFeedback();
             
-            StartCoroutine(HandleCooldown(collisionT.name));
+                StartCoroutine(HandleCooldown(collisionT.name));
+            }
         }
-    }
 
-    private void HapticFeedback()
-    {
-        LeftController?.SendHapticImpulse(0.125f, 0.175f);
-        RightController?.SendHapticImpulse(0.125f, 0.175f);
-    }
+        private void HapticFeedback()
+        {
+            LeftController?.SendHapticImpulse(0.125f, 0.175f);
+            RightController?.SendHapticImpulse(0.125f, 0.175f);
+        }
 
-    private IEnumerator HandleCooldown(string name)
-    {
-        _ballsOnCooldown.Add(name);
-        yield return new WaitForSeconds(CoolDown);
-        _ballsOnCooldown.Remove(name);
-        yield return null;
-    }
+        private IEnumerator HandleCooldown(string name)
+        {
+            _ballsOnCooldown.Add(name);
+            yield return new WaitForSeconds(CoolDown);
+            _ballsOnCooldown.Remove(name);
+            yield return null;
+        }
 
-    private bool IsOnCooldown(string name)
-    {
-        return _ballsOnCooldown.Contains(name);
+        private bool IsOnCooldown(string name)
+        {
+            return _ballsOnCooldown.Contains(name);
+        }
     }
 }

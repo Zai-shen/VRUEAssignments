@@ -1,7 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Unity.Template.VR.VRUEAssignments.Structures
+namespace VRUEAssignments.Structures
 {
     [RequireComponent(typeof(Rigidbody),typeof(Renderer))]
     public class Structure : MonoBehaviour

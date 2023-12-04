@@ -1,14 +1,15 @@
 using Dreamteck.Splines;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class AddPathToEnemy : MonoBehaviour
+namespace VRUEAssignments.NPCs
 {
-    public GameObject enemy;
-    public SplineComputer spline;
-    void Start()
+    public class AddPathToEnemy : MonoBehaviour
     {
-        enemy.GetComponent<SplineFollower>().spline = spline;
+        public GameObject enemy;
+        public SplineComputer spline;
+        void Start()
+        {
+            enemy.GetComponent<SplineFollower>().spline = spline;
+        }
     }
 }

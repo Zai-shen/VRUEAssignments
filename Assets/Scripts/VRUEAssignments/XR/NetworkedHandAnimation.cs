@@ -1,10 +1,11 @@
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace VRUEAssignments.XR
 {
     [RequireComponent(typeof(Animator))]
-    public class HandAnimation : MonoBehaviour
+    public class NetworkedHandAnimation : MonoBehaviourPun
     {
         public InputActionReference GripInputActionReference;
         public InputActionReference TriggerInputActionReference;
@@ -20,8 +21,11 @@ namespace VRUEAssignments.XR
 
         private void Update()
         {
-            AnimateGrip();
-            AnimateTrigger();
+            if (photonView.IsMine)
+            {
+                AnimateGrip();
+                AnimateTrigger();
+            }
         }
     
         private void AnimateGrip()

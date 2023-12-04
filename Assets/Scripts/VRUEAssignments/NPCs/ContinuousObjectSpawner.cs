@@ -1,28 +1,28 @@
-using Dreamteck.Splines;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ContinuousObjectSpawner: MonoBehaviour
+namespace VRUEAssignments.NPCs
 {
-    // Start is called before the first frame update
-    public GameObject obj;
-    private float time;
-    public float spawnInterval;
-    void Start()
+    public class ContinuousObjectSpawner: MonoBehaviour
     {
-      
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        time += Time.deltaTime;
-        if (time >= spawnInterval)
+        // Start is called before the first frame update
+        public GameObject obj;
+        private float time;
+        public float spawnInterval;
+        void Start()
         {
-            var newObject = Instantiate(obj, transform.position, Quaternion.identity);
-            newObject.transform.parent = transform;
-            time = 0;
+      
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            time += Time.deltaTime;
+            if (time >= spawnInterval)
+            {
+                var newObject = Instantiate(obj, transform.position, Quaternion.identity);
+                newObject.transform.parent = transform;
+                time = 0;
+            }
         }
     }
 }

@@ -1,13 +1,13 @@
-using UnityEngine;
-
-#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.XR.Management;
+using UnityEngine;
+#if UNITY_EDITOR
+
 #else
 using UnityEngine.XR.Management;
 #endif
 
-namespace Unity.Template.VR
+namespace VRUEAssignments.XR
 {
     internal class XRPlatformControllerSetup : MonoBehaviour
     {

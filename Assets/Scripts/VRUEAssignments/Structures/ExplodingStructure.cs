@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Unity.Template.VR.VRUEAssignments.Structures
+namespace VRUEAssignments.Structures
 {
     public class ExplodingStructure : Structure
     {

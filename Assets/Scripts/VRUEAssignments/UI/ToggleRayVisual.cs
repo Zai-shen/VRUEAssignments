@@ -1,25 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class ToggleRayVisual : MonoBehaviour
+namespace VRUEAssignments.UI
 {
-    private XRInteractorLineVisual _xrInteractorLineVisual;
-
-    private void Start()
+    public class ToggleRayVisual : MonoBehaviour
     {
-        _xrInteractorLineVisual = GetComponent<XRInteractorLineVisual>();
-        Hide();
-    }
+        private XRInteractorLineVisual _xrInteractorLineVisual;
 
-    public void Show()
-    {
-        _xrInteractorLineVisual.enabled = true;
-    }
+        private void Start()
+        {
+            _xrInteractorLineVisual = GetComponent<XRInteractorLineVisual>();
+            Hide();
+        }
+
+        public void Show()
+        {
+            _xrInteractorLineVisual.enabled = true;
+        }
     
-    public void Hide()
-    {
-        _xrInteractorLineVisual.enabled = false;
+        public void Hide()
+        {
+            _xrInteractorLineVisual.enabled = false;
+        }
     }
 }

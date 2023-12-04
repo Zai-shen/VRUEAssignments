@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Template.VR.VRUEAssignments.Structures;
 using UnityEngine;
 using UnityEngine.Serialization;
+using VRUEAssignments.Structures;
 using VRUEAssignments.Utils;
 
 namespace VRUEAssignments.Managers
