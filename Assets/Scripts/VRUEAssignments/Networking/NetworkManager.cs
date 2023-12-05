@@ -208,7 +208,7 @@ namespace VRUEAssignments.Networking
         public override void OnDisconnected(DisconnectCause cause)
         {
             LogFeedback("<color=red>OnDisconnected</color> " + cause);
-            Debug.LogError("Disconnected");
+            Debug.LogWarning("Disconnected");
 
             // #Critical: we failed to connect or got disconnected. There is not much we can do. Typically, a UI system should be in place to let the user attemp to connect again.
             loaderAnimation.StopLoaderAnimation();
