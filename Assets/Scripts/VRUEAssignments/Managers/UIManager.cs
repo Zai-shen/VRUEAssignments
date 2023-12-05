@@ -90,7 +90,7 @@ namespace VRUEAssignments.Managers
         public void UpdateTime()
         {
             GameStatistics.TimeElapsed = (System.DateTime.UtcNow - GameStatistics.StartTime).Seconds;
-            TimeLabel.SetText("Time: " + GameStatistics.TimeElapsed.ToString() + "s");
+            TimeLabel?.SetText("Time: " + GameStatistics.TimeElapsed.ToString() + "s");
         }
 
         private void Update()
@@ -131,6 +131,7 @@ namespace VRUEAssignments.Managers
 
         private IEnumerator CreateAndDestroyLogText(string message, float duration)
         {
+            if (LogPanel == null) yield break;
             GameObject logText = Instantiate(LogTextPrefab, LogPanel.transform);
             logText?.GetComponent<TextMeshProUGUI>().SetText(message);
 

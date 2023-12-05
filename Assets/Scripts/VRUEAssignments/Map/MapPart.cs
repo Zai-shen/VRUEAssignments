@@ -1,19 +1,30 @@
-﻿namespace VRUEAssignments.Map
+﻿using UnityEngine;
+
+namespace VRUEAssignments.Map
 {
+    public enum MapTileType
+    {
+        EMPTY = 0,
+        PATH = 1,
+        BASE = 2
+    }
+    
     public class MapPart
     {
-        private int _value;
+        public GameObject MapPartGo;
+        
+        private MapTileType _value;
         private Grid<MapPart> _grid;
         private int _x;
         private int _y;
         private int _z;
         
-        public MapPart(int startValue)
+        public MapPart(MapTileType startValue)
         {
             _value = startValue;
         }
         
-        public MapPart(int startValue, Grid<MapPart> grid, int x, int y, int z)
+        public MapPart(MapTileType startValue, Grid<MapPart> grid, int x, int y, int z)
         {
             _value = startValue;
             _grid = grid;
@@ -22,9 +33,24 @@
             _z = z;
         }
 
-        public void AddValue(int added)
+        public void ChangeType(MapTileType type)
         {
-            _value += added;
+            _value = type;
+
+            switch (_value)
+            {
+                case MapTileType.BASE:
+                    //Spawnbase
+                    MapPartGo = new GameObject($"MapPartGO - x:{_x} y:{_y} z:{_z} _value:{_value.ToString()}");
+                    break;
+                case MapTileType.PATH:
+                    //SPawnpath
+                    MapPartGo = new GameObject($"MapPartGO - x:{_x} y:{_y} z:{_z} _value:{_value.ToString()}");
+                    break;
+                default:
+                    break;
+            }
+            
             _grid.TriggerGridObjectChanged(_x, _y, _z);
         }
 

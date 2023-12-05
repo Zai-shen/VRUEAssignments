@@ -120,12 +120,7 @@ namespace VRUEAssignments.Networking
     
         private static void LogFeedback(string message)
         {
-            if (UIManager.Instance == null)
-            {
-                return;
-            }
-
-            UIManager.Instance.DisplayUIMessage(System.Environment.NewLine + message);
+            UIManager.Instance?.DisplayUIMessage(System.Environment.NewLine + message);
         }
 
         private void SpawnPlayer()

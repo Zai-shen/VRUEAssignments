@@ -20,10 +20,12 @@ namespace VRUEAssignments.Map
         private GameObject[,,] _gridDebugArray;
 
         public Grid(Vector3Int size, float cellSize, Func<Grid<T>, int, int, int, T> CreateGridObject,
-            Vector3 originPosition = default(Vector3), bool debug = false) : this(size.x, size.y, size.z, cellSize, CreateGridObject, originPosition, debug)
+            Vector3 originPosition = default(Vector3), bool debug = false)
+            : this(size.x, size.y, size.z, cellSize, CreateGridObject, originPosition, debug)
         { }
 
-        public Grid(int width, int height, int depth, float cellSize, Func<Grid<T>, int, int, int, T> CreateGridObject, Vector3 originPosition = default(Vector3), bool debug = false)
+        public Grid(int width, int height, int depth, float cellSize, Func<Grid<T>, int, int, int, T> CreateGridObject, 
+            Vector3 originPosition = default(Vector3), bool debug = false)
         {
             _originPosition = originPosition;
             _width = width;
@@ -32,16 +34,17 @@ namespace VRUEAssignments.Map
             _gridArray = new T[_width, _height,_depth];
             _cellSize = cellSize;
             
+            FillGridWithDefault(CreateGridObject);
+            
             _debug = debug;
             if (_debug)
             {
                 _gridDebugArray = new GameObject[_width, _height, _depth];
+                OnGridValueChanged += UpdateDebugText;
                 FillGridWithDebug();
                 DrawDebugLines();
-                OnGridValueChanged += UpdateDebugText;
             }
 
-            FillGridWithDefault(CreateGridObject);
         }
         
         private void FillGridWithDefault(Func<Grid<T>, int, int, int, T> CreateGridObject)
@@ -166,11 +169,11 @@ namespace VRUEAssignments.Map
                     for (int z = 0; z < _gridArray.GetLength(2); z++)
                     { 
                         _gridDebugArray[x, y, z] = new GameObject("DebugText - " + $"x:{x} , y: {y} , z: {y}");
-                        _gridDebugArray[x, y, z].transform.position = GetWorldPosition(x, y, z) + new Vector3(1, 1) * _cellSize / 2;
+                        _gridDebugArray[x, y, z].transform.position = GetWorldPosition(x, y, z) + new Vector3(1, 1, 1) * _cellSize / 2;
                         TextMeshPro tmpText = _gridDebugArray[x,y,z].AddComponent<TextMeshPro>();
                         tmpText.fontSize = 1.5f;
                         tmpText.alignment = TextAlignmentOptions.Center;
-                        UpdateDebugText(x, y, z);
+                        TriggerGridObjectChanged(x, y, z);
                     }
                 }
             }

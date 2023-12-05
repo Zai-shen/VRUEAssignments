@@ -721,7 +721,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &694143822
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1970,6 +1970,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DebugInEditor: 1
   TopCamera: {fileID: 40403664}
+  GridSize: {x: 25, y: 1, z: 25}
 --- !u!1001 &1849692611
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -15,8 +15,12 @@ namespace VRUEAssignments.Map
         private void Start()
         {
             _gamingAreaGrid = new Grid<MapPart>(GridSize, 1,
-                (Grid<MapPart> mp, int x, int y, int z) => new MapPart(0, mp, x, y, z),
+                (Grid<MapPart> mp, int x, int y, int z) => new MapPart(MapTileType.EMPTY, mp, x, y, z),
                 transform.position - GridSize / 2, true);
+            
+            _gamingAreaGrid.GetGridObject(transform.position ).ChangeType(MapTileType.BASE);
+            _gamingAreaGrid.GetGridObject(transform.position  + Vector3Int.left).ChangeType(MapTileType.PATH);
+            _gamingAreaGrid.GetGridObject(transform.position  + Vector3Int.left * 2 ).ChangeType(MapTileType.PATH);
             
             if (DebugInEditor)
             {
@@ -43,7 +47,7 @@ namespace VRUEAssignments.Map
                 Debug.Log($"worldPos {worldPos.ToString()}");
                 
                 MapPart mPart = _gamingAreaGrid.GetGridObject(worldPos);
-                mPart?.AddValue(5);
+                mPart?.ChangeType(MapTileType.PATH);
             }
         }
     }
