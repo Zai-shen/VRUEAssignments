@@ -33,6 +33,7 @@ namespace VRUEAssignments.Managers
 
         private void SetLogPanelColor(Color color)
         {
+            if (LogPanel == null) return;
             LogPanel.color = color;
         }
 
@@ -131,11 +132,12 @@ namespace VRUEAssignments.Managers
         private IEnumerator CreateAndDestroyLogText(string message, float duration)
         {
             GameObject logText = Instantiate(LogTextPrefab, LogPanel.transform);
-            logText.GetComponent<TextMeshProUGUI>().SetText(message);
+            logText?.GetComponent<TextMeshProUGUI>().SetText(message);
 
             yield return new WaitForSeconds(duration);
-        
-            Destroy(logText);
+
+            if (logText != null)
+                Destroy(logText);
         }
     }
 }

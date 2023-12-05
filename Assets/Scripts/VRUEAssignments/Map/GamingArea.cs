@@ -12,15 +12,18 @@ namespace VRUEAssignments.Map
         
         private void Start()
         {
-            _gamingAreaGrid = new Grid<MapPart>(10, 10, 1,
-                (Grid<MapPart> mp, int x, int y) => new MapPart(0, mp, x, y),
+            _gamingAreaGrid = new Grid<MapPart>(10, 10, 10, 1,
+                (Grid<MapPart> mp, int x, int y, int z) => new MapPart(0, mp, x, y, z),
                 transform.position);
 
-            for (int i = 0; i < 4; i++)
+            for (int x = 0; x < 4; x++)
             {
-                for (int j = 0; j < 4; j++)
+                for (int y = 0; y < 4; y++)
                 {
-                    _gamingAreaGrid.GetGridObject(i,j).AddValue(i+j);
+                    for (int z = 0; z < 4; z++)
+                    {
+                        _gamingAreaGrid.GetGridObject(x, y, z).AddValue(x + y + z);
+                    }
                 }
             }
 
@@ -60,6 +63,7 @@ namespace VRUEAssignments.Map
         private Grid<MapPart> _grid;
         private int _x;
         private int _y;
+        private int _z;
         
 
         public MapPart(int startValue)
@@ -67,18 +71,19 @@ namespace VRUEAssignments.Map
             _value = startValue;
         }
         
-        public MapPart(int startValue, Grid<MapPart> grid, int x, int y)
+        public MapPart(int startValue, Grid<MapPart> grid, int x, int y, int z)
         {
             _value = startValue;
             _grid = grid;
             _x = x;
             _y = y;
+            _z = z;
         }
 
         public void AddValue(int added)
         {
             _value += added;
-            _grid.TriggerGridObjectChanged(_x, _y);
+            _grid.TriggerGridObjectChanged(_x, _y, _z);
         }
 
         public override string ToString()

@@ -6,90 +6,138 @@ namespace VRUEAssignments.Map
 {
     public class Grid<T>
     {
-        public Action<Vector2Int> OnGridValueChanged;
+        public Action<Vector3Int> OnGridValueChanged;
 
         private Vector3 _originPosition;
 
         private int _width;
         private int _height;
-        private T[,] _gridArray;
+        private int _depth;
+        private T[,,] _gridArray;
         private float _cellSize;
 
         private bool _debug;
-        private GameObject[,] _gridDebugArray;
+        private GameObject[,,] _gridDebugArray;
 
 
-        public Grid(int width, int height, float cellSize, Func<Grid<T>, int, int, T> CreateGridObject, Vector3 originPosition = default(Vector3))
+        public Grid(int width, int height, int depth, float cellSize, Func<Grid<T>, int, int, int, T> CreateGridObject, Vector3 originPosition = default(Vector3))
         {
             _originPosition = originPosition;
 
             _width = width;
             _height = height;
-            _gridArray = new T[_width, _height];
+            _depth = depth;
+            _gridArray = new T[_width, _height,_depth];
             _cellSize = cellSize;
 
-            _gridDebugArray = new GameObject[_width, _height];
+            _gridDebugArray = new GameObject[_width, _height, _depth];
 
+            FillGridWithDefault(CreateGridObject);
+
+            _debug = true;
+            if (!_debug) return;
+            FillGridWithDebug();
+            DrawDebugLines();
+            OnGridValueChanged += UpdateDebugText;
+        }
+
+        private void DrawDebugLines()
+        {
             for (int x = 0; x < _gridArray.GetLength(0); x++)
             {
                 for (int y = 0; y < _gridArray.GetLength(1); y++)
                 {
-                    _gridArray[x, y] = CreateGridObject(this, x, y);
-                }
-            }
-
-            _debug = true;
-            if (_debug)
-            {
-                for (int x = 0; x < _gridArray.GetLength(0); x++)
-                {
-                    for (int y = 0; y < _gridArray.GetLength(1); y++)
+                    for (int z = 0; z < _gridArray.GetLength(2); z++)
                     {
-                        _gridDebugArray[x, y] = new GameObject("DebugText - " + $"x:{x} , y: {y}");
-                        _gridDebugArray[x, y].transform.position = GetWorldPosition(x, y) + new Vector3(1, 1) * _cellSize / 2;
-                        TextMeshPro tmpText = _gridDebugArray[x, y].AddComponent<TextMeshPro>();
-                        tmpText.fontSize = 2f;
-                        tmpText.alignment = TextAlignmentOptions.Center;
-                        UpdateDebugText(x, y);
-                        Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y + 1), Color.blue, 100f);
-                        Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y), Color.blue, 100f);
+                        Debug.DrawLine(GetWorldPosition(x, y, z), GetWorldPosition(x, y + 1, z), Color.blue, 100f);
+                        Debug.DrawLine(GetWorldPosition(x, y, z), GetWorldPosition(x + 1, y, z), Color.blue, 100f);
+                        Debug.DrawLine(GetWorldPosition(x, y, z), GetWorldPosition(x, y, z + 1), Color.blue, 100f);
                     }
                 }
-                Debug.DrawLine(GetWorldPosition(0, height), GetWorldPosition(width, height), Color.blue, 100f);
-                Debug.DrawLine(GetWorldPosition(width, 0), GetWorldPosition(width, height), Color.blue, 100f);
+            }
+            //Top
+            Debug.DrawLine(GetWorldPosition(0, _height, 0), GetWorldPosition(_width, _height, 0), Color.blue, 100f);
+            Debug.DrawLine(GetWorldPosition(0, _height, 0), GetWorldPosition(0, _height, _depth), Color.blue, 100f);
+            Debug.DrawLine(GetWorldPosition(_width, _height, _depth), GetWorldPosition(0, _height, _depth), Color.blue, 100f);
+            Debug.DrawLine(GetWorldPosition(_width, _height, _depth), GetWorldPosition(_width, _height, 0), Color.blue, 100f);
+                
+            //Right
+            Debug.DrawLine(GetWorldPosition(_width, 0, 0), GetWorldPosition(_width, _height, 0), Color.blue, 100f);
+            Debug.DrawLine(GetWorldPosition(_width, 0, 0), GetWorldPosition(_width, 0, _depth), Color.blue, 100f);
+            Debug.DrawLine(GetWorldPosition(_width, _height, _depth), GetWorldPosition(_width, _height, 0), Color.blue, 100f);
+            Debug.DrawLine(GetWorldPosition(_width, _height, _depth), GetWorldPosition(_width, 0, _depth), Color.blue, 100f);
+                
+            //Back
+            Debug.DrawLine(GetWorldPosition(0, 0, _depth), GetWorldPosition(_width, 0, _depth), Color.blue, 100f);
+            Debug.DrawLine(GetWorldPosition(0, 0, _depth), GetWorldPosition(0, _height, _depth), Color.blue, 100f);
+            Debug.DrawLine(GetWorldPosition(_width, _height, _depth), GetWorldPosition(_width, 0, _depth), Color.blue, 100f);
+            Debug.DrawLine(GetWorldPosition(_width, _height, _depth), GetWorldPosition(0, _height, _depth), Color.blue, 100f);
 
-                OnGridValueChanged += UpdateDebugText;
+        }
+
+        private void FillGridWithDefault(Func<Grid<T>, int, int, int, T> CreateGridObject)
+        {
+            for (int x = 0; x < _gridArray.GetLength(0); x++)
+            {
+                for (int y = 0; y < _gridArray.GetLength(1); y++)
+                {
+                    for (int z = 0; z < _gridArray.GetLength(2); z++)
+                    {
+                        _gridArray[x,y,z] = CreateGridObject(this, x, y, z);
+                    }
+                }
             }
         }
 
-        private void UpdateDebugText(int x, int y)
+        private void FillGridWithDebug()
         {
-            _gridDebugArray[x, y].GetComponent<TextMeshPro>()
-                .SetText($"x:{x} , y: {y} \n{_gridArray[x, y]?.ToString()}");
+            for (int x = 0; x < _gridArray.GetLength(0); x++)
+            {
+                for (int y = 0; y < _gridArray.GetLength(1); y++)
+                {
+                    for (int z = 0; z < _gridArray.GetLength(2); z++)
+                    { 
+                        _gridDebugArray[x, y, z] = new GameObject("DebugText - " + $"x:{x} , y: {y} , z: {y}");
+                        _gridDebugArray[x, y, z].transform.position = GetWorldPosition(x, y, z) + new Vector3(1, 1) * _cellSize / 2;
+                        TextMeshPro tmpText = _gridDebugArray[x,y,z].AddComponent<TextMeshPro>();
+                        tmpText.fontSize = 1.5f;
+                        tmpText.alignment = TextAlignmentOptions.Center;
+                        UpdateDebugText(x, y, z);
+                    }
+                }
+            }
+        }
+
+
+        private void UpdateDebugText(int x, int y, int z)
+        {
+            _gridDebugArray[x, y, z].GetComponent<TextMeshPro>()
+                .SetText($"x: {x}\ny: {y}\nz: {z}\n{_gridArray[x, y, z]?.ToString()}");
         }
         
-        private void UpdateDebugText(Vector2Int vec)
+        private void UpdateDebugText(Vector3Int vec)
         {
-            UpdateDebugText(vec.x, vec.y);
+            UpdateDebugText(vec.x, vec.y, vec.z);
         }
 
-        private Vector3 GetWorldPosition(int x, int y)
+        private Vector3 GetWorldPosition(int x, int y, int z)
         {
-            return new Vector3(x, y) * _cellSize + _originPosition;
+            return new Vector3(x, y, z) * _cellSize + _originPosition;
         }
 
-        private void GetXY(Vector3 worldPosition, out int x, out int y)
+        private void GetXY(Vector3 worldPosition, out int x, out int y, out int z)
         {
             x = Mathf.FloorToInt((worldPosition - _originPosition).x / _cellSize);
             y = Mathf.FloorToInt((worldPosition - _originPosition).y / _cellSize);
+            z = Mathf.FloorToInt((worldPosition - _originPosition).z / _cellSize);
         }
 
-        public void SetGridObject(int x, int y, T value)
+        public void SetGridObject(int x, int y, int z, T value)
         {
             if (x >= 0 && y >= 0 && x < _width && y < _height)
             {
-                _gridArray[x, y] = value;
-                TriggerGridObjectChanged(x,y);
+                _gridArray[x, y, z] = value;
+                TriggerGridObjectChanged(x, y, z);
             }
             else
             {
@@ -97,22 +145,22 @@ namespace VRUEAssignments.Map
             }
         }
 
-        public void TriggerGridObjectChanged(int x, int y)
+        public void TriggerGridObjectChanged(int x, int y, int z)
         {
-            OnGridValueChanged?.Invoke(new Vector2Int(x,y));
+            OnGridValueChanged?.Invoke(new Vector3Int(x, y, z));
         }
 
         public void SetGridObject(Vector3 worldPosition, T value)
         {
-            GetXY(worldPosition, out int x, out int y);
-            SetGridObject(x, y, value);
+            GetXY(worldPosition, out int x, out int y, out int z);
+            SetGridObject(x, y, z, value);
         }
         
-        public T GetGridObject(int x, int y)
+        public T GetGridObject(int x, int y, int z)
         {
             if (x >= 0 && y >= 0 && x < _width && y < _height)
             {
-                return _gridArray[x, y];
+                return _gridArray[x, y, z];
             }
             else
             {
@@ -123,8 +171,8 @@ namespace VRUEAssignments.Map
 
         public T GetGridObject(Vector3 worldPosition)
         {
-            GetXY(worldPosition, out int x, out int y);
-            return GetGridObject(x, y);
+            GetXY(worldPosition, out int x, out int y, out int z);
+            return GetGridObject(x, y, z);
         }
     }
 }
