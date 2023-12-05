@@ -24,7 +24,7 @@ namespace VRUEAssignments.NPCs
 
         private void OnTriggerEnter(Collider other)
         {
-            Debug.Log("Enemy entered collision with " + other.gameObject.name);
+            // Debug.Log("Enemy entered collision with " + other.gameObject.name);
 
             if (other.gameObject.name.Equals("ClearArea")) {
                 Destroy(this.gameObject);

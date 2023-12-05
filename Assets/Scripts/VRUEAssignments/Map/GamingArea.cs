@@ -1,18 +1,18 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace VRUEAssignments
+namespace VRUEAssignments.Map
 {
     public class GamingArea : MonoBehaviour
     {
-        private VRUEAssignments.Grid<MapPart> _gamingAreaGrid;
+        public bool DebugInEditor = false;
+        public Camera TopCamera;
 
+        private Grid<MapPart> _gamingAreaGrid;
+        
         private void Start()
         {
-            _gamingAreaGrid = new VRUEAssignments.Grid<MapPart>(10, 10, 1,
+            _gamingAreaGrid = new Grid<MapPart>(10, 10, 1,
                 (Grid<MapPart> mp, int x, int y) => new MapPart(0, mp, x, y),
                 transform.position);
 
@@ -23,13 +23,31 @@ namespace VRUEAssignments
                     _gamingAreaGrid.GetGridObject(i,j).AddValue(i+j);
                 }
             }
+
+            if (DebugInEditor)
+            {
+                TopCamera.gameObject.SetActive(true);
+            }
         }
 
         private void Update()
         {
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
-                var worldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.value);
+                Vector3 worldPos;
+                if (DebugInEditor)
+                {
+                    worldPos = TopCamera.ScreenToWorldPoint(new Vector3(Mouse.current.position.value.x, Mouse.current.position.value.y, TopCamera.nearClipPlane));
+                }
+                else
+                {
+                    //TODO VR implementation 
+                    worldPos = Camera.main.ScreenToWorldPoint(new Vector3(Mouse.current.position.value.x, Mouse.current.position.value.y, Camera.main.nearClipPlane));
+                }
+
+                Debug.Log($"Mouse pos: {Mouse.current.position.value}");
+                Debug.Log($"worldPos {worldPos.ToString()}");
+                
                 MapPart mPart = _gamingAreaGrid.GetGridObject(worldPos);
                 mPart?.AddValue(5);
             }
