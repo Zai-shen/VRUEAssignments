@@ -1,8 +1,7 @@
 using UnityEditor;
-using UnityEditor.XR.Management;
 using UnityEngine;
 #if UNITY_EDITOR
-
+using UnityEditor.XR.Management;
 #else
 using UnityEngine.XR.Management;
 #endif
