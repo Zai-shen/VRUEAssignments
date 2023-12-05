@@ -252,10 +252,10 @@ namespace VRUEAssignments.Networking
             Debug.Log($"We are {role}");
 
             SpawnPlayer();
-            SpawnRoad();
+            // SpawnRoad();
         
             loaderAnimation.StopLoaderAnimation();
-            timerUI.StartDisplaying();
+            timerUI?.StartDisplaying();
         }
 
         private void UpdateSpawnOffset()
