@@ -19,7 +19,7 @@ namespace VRUEAssignments.NPCs
             time += Time.deltaTime;
             if (time >= spawnInterval)
             {
-                var newObject = Instantiate(obj, transform.position, Quaternion.identity);
+                var newObject = Instantiate(obj, transform.position + transform.forward.normalized * 0.1f, Quaternion.identity);
                 newObject.transform.parent = transform;
                 time = 0;
             }

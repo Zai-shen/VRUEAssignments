@@ -15,6 +15,8 @@ namespace VRUEAssignments.NPCs
         {
             initPosition = transform.position;   
             currentPosition = transform.position;   
+            
+            Invoke("DestroyThis", 10f);
         }
 
         // Update is called once per frame
@@ -22,13 +24,17 @@ namespace VRUEAssignments.NPCs
         {
             if (!this.gameObject.IsDestroyed() && Vector3.Distance(initPosition, currentPosition) < shootingRange)
             {
-                transform.localPosition += Vector3.up * Time.deltaTime * speed;
+                transform.localPosition += Vector3.forward * Time.deltaTime * speed;
                 currentPosition = transform.position;
             } else if (!this.gameObject.IsDestroyed())
             {
                 Destroy(this.gameObject);
             }
-        
+        }
+
+        private void DestroyThis()
+        {
+            Destroy(this);
         }
 
         private void OnTriggerEnter(Collider other)
