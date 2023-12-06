@@ -33,10 +33,15 @@ namespace VRUEAssignments.Map
             _depth = depth;
             _gridArray = new T[_width, _height,_depth];
             _cellSize = cellSize;
+            _debug = debug;
             
+            Init(CreateGridObject);
+        }
+
+        private void Init(Func<Grid<T>, int, int, int, T> CreateGridObject)
+        {
             FillGridWithDefault(CreateGridObject);
             
-            _debug = debug;
             if (_debug)
             {
                 _gridDebugArray = new GameObject[_width, _height, _depth];
@@ -44,9 +49,8 @@ namespace VRUEAssignments.Map
                 FillGridWithDebug();
                 DrawDebugLines();
             }
-
         }
-        
+
         private void FillGridWithDefault(Func<Grid<T>, int, int, int, T> CreateGridObject)
         {
             for (int x = 0; x < _gridArray.GetLength(0); x++)
@@ -174,6 +178,8 @@ namespace VRUEAssignments.Map
         
         private void FillGridWithDebug()
         {
+            GameObject gridDebugContainer = new GameObject("GridDebugContainer");
+            
             for (int x = 0; x < _gridArray.GetLength(0); x++)
             {
                 for (int y = 0; y < _gridArray.GetLength(1); y++)
@@ -181,6 +187,7 @@ namespace VRUEAssignments.Map
                     for (int z = 0; z < _gridArray.GetLength(2); z++)
                     { 
                         _gridDebugArray[x, y, z] = new GameObject("DebugText - " + $"x:{x} , y: {y} , z: {y}");
+                        _gridDebugArray[x, y, z].transform.SetParent(gridDebugContainer.transform);
                         _gridDebugArray[x, y, z].transform.position = GetWorldPosition(x, y, z) + new Vector3(_cellSize,_cellSize,_cellSize) / 2f;
                         TextMeshPro tmpText = _gridDebugArray[x,y,z].AddComponent<TextMeshPro>();
                         tmpText.fontSize = 1.5f;

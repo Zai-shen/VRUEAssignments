@@ -7,7 +7,7 @@ namespace VRUEAssignments.Map
     public class MapTile : MonoBehaviour
     {
         [SerializeField] private MapTileType _mapTileType;
-        [SerializeField ]private float _cellSize;
+        [SerializeField] private float _cellSize;
         
         private MapTileSO _mapTileSo;
         private GameObject _mesh;
@@ -25,10 +25,10 @@ namespace VRUEAssignments.Map
             {
                 case MapTileType.PATH:
                     // TODO fix this to take corners too
-                    _mapTileSo = MapTileSOLoader.GetRandomStraightPathSO();
+                    _mapTileSo = MapTileSoLoader.GetRandomStraightPathSo();
                     break;
                 case MapTileType.BASE:
-                    _mapTileSo = MapTileSOLoader.GetRandomBaseSO();
+                    _mapTileSo = MapTileSoLoader.GetRandomBaseSo();
                     break;
                 case MapTileType.EMPTY:
                 default:

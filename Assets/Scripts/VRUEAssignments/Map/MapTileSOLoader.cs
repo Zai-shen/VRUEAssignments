@@ -5,58 +5,58 @@ using Random = UnityEngine.Random;
 
 namespace VRUEAssignments.Map
 {
-    public static class MapTileSOLoader
+    public static class MapTileSoLoader
     {
-        private static List<MapTileSO> MapTileSos = new ();
+        private static List<MapTileSO> _mapTileSos = new ();
         
-        private static List<MapTileSO> MapTilesBase = new ();
-        private static List<MapTileSO> MapTilesStraightPath = new ();
-        private static List<MapTileSO> MapTilesCornerPath = new ();
+        private static readonly List<MapTileSO> _mapTilesBase = new ();
+        private static readonly List<MapTileSO> _mapTilesStraightPath = new ();
+        private static readonly List<MapTileSO> _mapTilesCornerPath = new ();
         
         public static void Init(IEnumerable<MapTileSO> mapTileSos)
         {
-            foreach (MapTileSO mpSO in mapTileSos)
+            foreach (MapTileSO mpSo in mapTileSos)
             {
-                switch (mpSO.MapTType)
+                switch (mpSo.MapTType)
                 {
                     case MapTileType.PATH:
-                        if (IsStraight(mpSO.MobEntry, mpSO.MobExit))
+                        if (IsStraight(mpSo.MobEntry, mpSo.MobExit))
                         {
-                            MapTilesStraightPath.Add(mpSO);
+                            _mapTilesStraightPath.Add(mpSo);
                         }
                         else
                         {
-                            MapTilesCornerPath.Add(mpSO);
+                            _mapTilesCornerPath.Add(mpSo);
                         }
                         break;
                     case MapTileType.BASE:
-                        MapTilesBase.Add(mpSO);
+                        _mapTilesBase.Add(mpSo);
                         break;
                     case MapTileType.EMPTY:
                     default:
                         Debug.LogWarning("MapTileSOLoader: MapTileSO.MapTileType should not be empty!");
                         break;
                 }
-                MapTileSos.Add(mpSO);
+                _mapTileSos.Add(mpSo);
             }
         }
 
-        public static MapTileSO GetRandomBaseSO()
+        public static MapTileSO GetRandomBaseSo()
         {
-            int range = MapTilesBase.Count;
-            return MapTilesBase[Random.Range(0,range)];
+            int range = _mapTilesBase.Count;
+            return _mapTilesBase[Random.Range(0,range)];
         }
         
-        public static MapTileSO GetRandomStraightPathSO()
+        public static MapTileSO GetRandomStraightPathSo()
         {
-            int range = MapTilesStraightPath.Count;
-            return MapTilesStraightPath[Random.Range(0,range)];
+            int range = _mapTilesStraightPath.Count;
+            return _mapTilesStraightPath[Random.Range(0,range)];
         }
         
-        public static MapTileSO GetRandomCornerPathSO()
+        public static MapTileSO GetRandomCornerPathSo()
         {
-            int range = MapTilesCornerPath.Count;
-            return MapTilesCornerPath[Random.Range(0,range)];
+            int range = _mapTilesCornerPath.Count;
+            return _mapTilesCornerPath[Random.Range(0,range)];
         }
 
         private static bool IsStraight(XZCoords entry, XZCoords exit)

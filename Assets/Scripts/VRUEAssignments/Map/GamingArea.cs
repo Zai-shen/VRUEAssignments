@@ -5,26 +5,30 @@ namespace VRUEAssignments.Map
 {
     public class GamingArea : MonoBehaviour
     {
-        public bool DebugInEditor = false;
+        public bool DebugInEditor;
         public Camera TopCamera;
 
         public Vector3 GridCenter = new Vector3(0, 0, 0);
         public Vector3Int GridSize = new Vector3Int(25, 1, 25);
         public float CellSize = 1f;
-        
+
+        public Transform MapTileContainer;
         public MapTileSO[] MapTileSos;
 
         private Grid<MapPart> _gamingAreaGrid;
 
         private void Start()
         {
-            MapTileSOLoader.Init(MapTileSos);
+            MapTileSoLoader.Init(MapTileSos);
             
             _gamingAreaGrid = new Grid<MapPart>(GridSize, CellSize,
-                (Grid<MapPart> mp, int x, int y, int z) => new MapPart(MapTileType.EMPTY, mp, x, y, z, CellSize),
+                (mp, x, y, z) => new MapPart(MapTileType.EMPTY, mp, x, y, z, CellSize),
                 GridCenter - GridSize / 2, true);
             
-            _gamingAreaGrid.GetGridObject(GridCenter).ChangeType(MapTileType.BASE);
+            
+            MapPart part0 = _gamingAreaGrid.GetGridObject(GridCenter);
+            part0.ChangeType(MapTileType.BASE);
+            part0.SetMapTileContainer(MapTileContainer.transform);
             _gamingAreaGrid.GetGridObject(GridCenter + Vector3.left * 1 * CellSize).ChangeType(MapTileType.PATH);
             _gamingAreaGrid.GetGridObject(GridCenter + Vector3.left * 2 * CellSize).ChangeType(MapTileType.PATH);
             _gamingAreaGrid.GetGridObject(GridCenter + Vector3.left * 3 * CellSize).ChangeType(MapTileType.PATH);
@@ -44,6 +48,7 @@ namespace VRUEAssignments.Map
                 if (DebugInEditor)
                 {
                     worldPos = TopCamera.ScreenToWorldPoint(new Vector3(Mouse.current.position.value.x, Mouse.current.position.value.y, TopCamera.nearClipPlane));
+                    worldPos.y = GridCenter.y;
                 }
                 else
                 {

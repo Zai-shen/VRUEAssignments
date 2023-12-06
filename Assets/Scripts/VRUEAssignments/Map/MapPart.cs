@@ -6,6 +6,7 @@ namespace VRUEAssignments.Map
     {
         public GameObject MapPartGo;
         private MapTile _mapTile;
+        private Transform _mapTileContainer;
         
         private MapTileType _type;
         private Grid<MapPart> _grid;
@@ -47,6 +48,7 @@ namespace VRUEAssignments.Map
                 case MapTileType.BASE:
                 case MapTileType.PATH:
                     MapPartGo = new GameObject($"MapPartGO {_type.ToString()} - {_gridPosition.ToString()}");
+                    if (_mapTileContainer != null) MapPartGo.transform.SetParent(_mapTileContainer);
                     _mapTile = MapPartGo.AddComponent<MapTile>();
                     _mapTile.SetType(_type);
                     _mapTile.SetSize(_cellSize);
@@ -58,6 +60,15 @@ namespace VRUEAssignments.Map
             }
         }
 
+        public void SetMapTileContainer(Transform container)
+        {
+            _mapTileContainer = container;
+            if (MapPartGo != null)
+            {
+                MapPartGo.transform.SetParent(_mapTileContainer);
+            }
+        }
+        
         public override string ToString()
         {
             return //base.ToString() +
