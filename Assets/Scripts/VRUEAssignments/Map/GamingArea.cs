@@ -8,7 +8,10 @@ namespace VRUEAssignments.Map
         public bool DebugInEditor = false;
         public Camera TopCamera;
 
+        public Vector3 GridCenter = new Vector3(0, 0, 0);
         public Vector3Int GridSize = new Vector3Int(25, 1, 25);
+        public float CellSize = 1f;
+        
         public MapTileSO[] MapTileSos;
 
         private Grid<MapPart> _gamingAreaGrid;
@@ -17,13 +20,15 @@ namespace VRUEAssignments.Map
         {
             MapTileSOLoader.Init(MapTileSos);
             
-            _gamingAreaGrid = new Grid<MapPart>(GridSize, 1,
-                (Grid<MapPart> mp, int x, int y, int z) => new MapPart(MapTileType.EMPTY, mp, x, y, z),
-                transform.position - GridSize / 2, true);
+            _gamingAreaGrid = new Grid<MapPart>(GridSize, CellSize,
+                (Grid<MapPart> mp, int x, int y, int z) => new MapPart(MapTileType.EMPTY, mp, x, y, z, CellSize),
+                GridCenter - GridSize / 2, true);
             
-            _gamingAreaGrid.GetGridObject(transform.position ).ChangeType(MapTileType.BASE);
-            _gamingAreaGrid.GetGridObject(transform.position  + Vector3Int.left).ChangeType(MapTileType.PATH);
-            _gamingAreaGrid.GetGridObject(transform.position  + Vector3Int.left * 2 ).ChangeType(MapTileType.PATH);
+            _gamingAreaGrid.GetGridObject(GridCenter).ChangeType(MapTileType.BASE);
+            _gamingAreaGrid.GetGridObject(GridCenter + Vector3.left * 1 * CellSize).ChangeType(MapTileType.PATH);
+            _gamingAreaGrid.GetGridObject(GridCenter + Vector3.left * 2 * CellSize).ChangeType(MapTileType.PATH);
+            _gamingAreaGrid.GetGridObject(GridCenter + Vector3.left * 3 * CellSize).ChangeType(MapTileType.PATH);
+            _gamingAreaGrid.GetGridObject(GridCenter + Vector3.left * 3 * CellSize + Vector3.forward * 1 * CellSize).ChangeType(MapTileType.PATH);
             
             if (DebugInEditor)
             {

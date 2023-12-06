@@ -6,15 +6,12 @@ namespace VRUEAssignments.Map
 {
     public class MapTile : MonoBehaviour
     {
-        [FormerlySerializedAs("MapTType")] [SerializeField] private MapTileType _mapTileType;
+        [SerializeField] private MapTileType _mapTileType;
+        [SerializeField ]private float _cellSize;
         
         private MapTileSO _mapTileSo;
         private GameObject _mesh;
-
-        private void Start()
-        {
-        }
-
+        
         public void SetType(MapTileType mapTileType)
         {
             _mapTileType = mapTileType;
@@ -44,7 +41,13 @@ namespace VRUEAssignments.Map
         {
             _mesh = Instantiate(_mapTileSo.TilePrefab, transform);
             _mesh.name = _mapTileSo.Name;
-            _mesh.transform.position = position;
+            _mesh.transform.position = position + new Vector3(_cellSize,_cellSize,_cellSize) / 2f;
+            _mesh.transform.localScale *= _cellSize;
+        }
+        
+        public void SetSize(float size)
+        {
+            _cellSize = size;
         }
     }
 }

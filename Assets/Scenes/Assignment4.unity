@@ -1970,7 +1970,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DebugInEditor: 1
   TopCamera: {fileID: 40403664}
+  GridCenter: {x: 0, y: 0, z: 5}
   GridSize: {x: 25, y: 1, z: 25}
+  CellSize: 1
   MapTileSos:
   - {fileID: 11400000, guid: 4b93fc06faa23ab4a99297fe25febe07, type: 2}
   - {fileID: 11400000, guid: 967617a721993664ebde957e43514f75, type: 2}

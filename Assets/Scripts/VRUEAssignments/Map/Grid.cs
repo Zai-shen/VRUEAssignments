@@ -55,7 +55,7 @@ namespace VRUEAssignments.Map
                 {
                     for (int z = 0; z < _gridArray.GetLength(2); z++)
                     {
-                        _gridArray[x,y,z] = CreateGridObject(this, x, y, z);
+                        _gridArray[x, y, z] = CreateGridObject(this, x, y, z);
                     }
                 }
             }
@@ -72,12 +72,17 @@ namespace VRUEAssignments.Map
             UpdateDebugText(vec.x, vec.y, vec.z);
         }
 
-        private Vector3 GetWorldPosition(int x, int y, int z)
+        public Vector3 GetWorldPosition(Vector3 position)
+        {
+            return position * _cellSize + _originPosition;
+        }
+        
+        public Vector3 GetWorldPosition(int x, int y, int z)
         {
             return new Vector3(x, y, z) * _cellSize + _originPosition;
         }
 
-        private void GetXY(Vector3 worldPosition, out int x, out int y, out int z)
+        private void GetXYZ(Vector3 worldPosition, out int x, out int y, out int z)
         {
             x = Mathf.FloorToInt((worldPosition - _originPosition).x / _cellSize);
             y = Mathf.FloorToInt((worldPosition - _originPosition).y / _cellSize);
@@ -97,6 +102,12 @@ namespace VRUEAssignments.Map
             }
         }
 
+        public void SetGridObject(Vector3 worldPosition, T value)
+        {
+            GetXYZ(worldPosition, out int x, out int y, out int z);
+            SetGridObject(x, y, z, value);
+        }
+        
         public void TriggerGridObjectChanged(Vector3Int pos)
         {
             TriggerGridObjectChanged(pos.x,pos.y,pos.z);
@@ -108,11 +119,6 @@ namespace VRUEAssignments.Map
             OnGridValueChanged?.Invoke(new Vector3Int(x, y, z));
         }
 
-        public void SetGridObject(Vector3 worldPosition, T value)
-        {
-            GetXY(worldPosition, out int x, out int y, out int z);
-            SetGridObject(x, y, z, value);
-        }
         
         public T GetGridObject(int x, int y, int z)
         {
@@ -129,7 +135,7 @@ namespace VRUEAssignments.Map
 
         public T GetGridObject(Vector3 worldPosition)
         {
-            GetXY(worldPosition, out int x, out int y, out int z);
+            GetXYZ(worldPosition, out int x, out int y, out int z);
             return GetGridObject(x, y, z);
         }
 
@@ -175,7 +181,7 @@ namespace VRUEAssignments.Map
                     for (int z = 0; z < _gridArray.GetLength(2); z++)
                     { 
                         _gridDebugArray[x, y, z] = new GameObject("DebugText - " + $"x:{x} , y: {y} , z: {y}");
-                        _gridDebugArray[x, y, z].transform.position = GetWorldPosition(x, y, z) + new Vector3(1, 1, 1) * _cellSize / 2;
+                        _gridDebugArray[x, y, z].transform.position = GetWorldPosition(x, y, z) + new Vector3(_cellSize,_cellSize,_cellSize) / 2f;
                         TextMeshPro tmpText = _gridDebugArray[x,y,z].AddComponent<TextMeshPro>();
                         tmpText.fontSize = 1.5f;
                         tmpText.alignment = TextAlignmentOptions.Center;
