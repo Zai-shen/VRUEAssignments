@@ -97,6 +97,12 @@ namespace VRUEAssignments.Map
             }
         }
 
+        public void TriggerGridObjectChanged(Vector3Int pos)
+        {
+            TriggerGridObjectChanged(pos.x,pos.y,pos.z);
+        }
+
+        
         public void TriggerGridObjectChanged(int x, int y, int z)
         {
             OnGridValueChanged?.Invoke(new Vector3Int(x, y, z));

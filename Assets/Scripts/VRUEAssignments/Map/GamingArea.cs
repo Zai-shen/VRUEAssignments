@@ -9,11 +9,14 @@ namespace VRUEAssignments.Map
         public Camera TopCamera;
 
         public Vector3Int GridSize = new Vector3Int(25, 1, 25);
-        
+        public MapTileSO[] MapTileSos;
+
         private Grid<MapPart> _gamingAreaGrid;
-        
+
         private void Start()
         {
+            MapTileSOLoader.Init(MapTileSos);
+            
             _gamingAreaGrid = new Grid<MapPart>(GridSize, 1,
                 (Grid<MapPart> mp, int x, int y, int z) => new MapPart(MapTileType.EMPTY, mp, x, y, z),
                 transform.position - GridSize / 2, true);
