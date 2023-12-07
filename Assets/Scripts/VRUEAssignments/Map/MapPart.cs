@@ -60,7 +60,7 @@ namespace VRUEAssignments.Map
             }
         }
 
-        public void SetMapTileContainer(Transform container)
+        public void SetParentContainer(Transform container)
         {
             _mapTileContainer = container;
             if (MapPartGo != null)

@@ -95,7 +95,7 @@ namespace VRUEAssignments.Map
 
         public void SetGridObject(int x, int y, int z, T value)
         {
-            if (x >= 0 && y >= 0 && x < _width && y < _height)
+            if (x >= 0 && y >= 0 && z >= 0 && x < _width && y < _height && z < _depth)
             {
                 _gridArray[x, y, z] = value;
                 TriggerGridObjectChanged(x, y, z);
@@ -126,7 +126,7 @@ namespace VRUEAssignments.Map
         
         public T GetGridObject(int x, int y, int z)
         {
-            if (x >= 0 && y >= 0 && x < _width && y < _height)
+            if (x >= 0 && y >= 0 && z >= 0 && x < _width && y < _height && z < _depth)
             {
                 return _gridArray[x, y, z];
             }

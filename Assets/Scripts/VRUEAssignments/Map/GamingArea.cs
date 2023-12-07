@@ -24,20 +24,32 @@ namespace VRUEAssignments.Map
             _gamingAreaGrid = new Grid<MapPart>(GridSize, CellSize,
                 (mp, x, y, z) => new MapPart(MapTileType.EMPTY, mp, x, y, z, CellSize),
                 GridCenter - GridSize / 2, true);
-            
-            
-            MapPart part0 = _gamingAreaGrid.GetGridObject(GridCenter);
-            part0.ChangeType(MapTileType.BASE);
-            part0.SetMapTileContainer(MapTileContainer.transform);
-            _gamingAreaGrid.GetGridObject(GridCenter + Vector3.left * 1 * CellSize).ChangeType(MapTileType.PATH);
-            _gamingAreaGrid.GetGridObject(GridCenter + Vector3.left * 2 * CellSize).ChangeType(MapTileType.PATH);
-            _gamingAreaGrid.GetGridObject(GridCenter + Vector3.left * 3 * CellSize).ChangeType(MapTileType.PATH);
-            _gamingAreaGrid.GetGridObject(GridCenter + Vector3.left * 3 * CellSize + Vector3.forward * 1 * CellSize).ChangeType(MapTileType.PATH);
+
+            CreateMapTile(GridCenter, MapTileType.BASE);
+            CreateMapTile(GridCenter + Vector3.left * 1 * CellSize, MapTileType.PATH);
+            CreateMapTile(GridCenter + Vector3.left * 2 * CellSize, MapTileType.PATH);
+            CreateMapTile(GridCenter + Vector3.left * 2 * CellSize, MapTileType.PATH);
+            CreateMapTile(GridCenter + Vector3.left * 3 * CellSize + Vector3.forward * 1 * CellSize, MapTileType.PATH);
             
             if (DebugInEditor)
             {
                 TopCamera.gameObject.SetActive(true);
             }
+        }
+
+        private MapPart CreateMapTile(Vector3 worldPosition, MapTileType mapTileType)
+        {
+            MapPart mPart = _gamingAreaGrid.GetGridObject(worldPosition);
+            if (mPart == null)
+            {
+                Debug.LogWarning($"Could not get MapPart at position {worldPosition}");
+                return default;
+            }
+            
+            mPart.ChangeType(mapTileType);
+            mPart.SetParentContainer(MapTileContainer.transform);
+            
+            return mPart;
         }
 
         private void Update()
@@ -58,9 +70,8 @@ namespace VRUEAssignments.Map
 
                 Debug.Log($"Mouse pos: {Mouse.current.position.value}");
                 Debug.Log($"worldPos {worldPos.ToString()}");
-                
-                MapPart mPart = _gamingAreaGrid.GetGridObject(worldPos);
-                mPart?.ChangeType(MapTileType.PATH);
+
+                CreateMapTile(worldPos, MapTileType.PATH);
             }
         }
     }
