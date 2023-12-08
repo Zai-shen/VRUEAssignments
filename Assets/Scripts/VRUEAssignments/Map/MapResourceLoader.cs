@@ -5,13 +5,13 @@ using Random = UnityEngine.Random;
 
 namespace VRUEAssignments.Map
 {
-    public static class MapTileSoLoader
+    public static class MapResourceLoader
     {
         private static List<MapTileSO> _mapTileSos = new ();
-        
         private static readonly List<MapTileSO> _mapTilesBase = new ();
         private static readonly List<MapTileSO> _mapTilesStraightPath = new ();
         private static readonly List<MapTileSO> _mapTilesCornerPath = new ();
+        private static readonly List<MapTileSO> _mapTilesTeleport = new ();
         
         public static void Init(IEnumerable<MapTileSO> mapTileSos)
         {
@@ -31,6 +31,9 @@ namespace VRUEAssignments.Map
                         break;
                     case MapTileType.BASE:
                         _mapTilesBase.Add(mpSo);
+                        break;
+                    case MapTileType.TELEPORT:
+                        _mapTilesTeleport.Add(mpSo);
                         break;
                     case MapTileType.EMPTY:
                     default:
@@ -58,7 +61,13 @@ namespace VRUEAssignments.Map
             int range = _mapTilesCornerPath.Count;
             return _mapTilesCornerPath[Random.Range(0,range)];
         }
-
+        
+        public static MapTileSO GetRandomTeleportSo()
+        {
+            int range = _mapTilesTeleport.Count;
+            return _mapTilesTeleport[Random.Range(0,range)];
+        }
+        
         private static bool IsStraight(XZCoords entry, XZCoords exit)
         {
             return (entry == XZCoords.UP && exit == XZCoords.DOWN)

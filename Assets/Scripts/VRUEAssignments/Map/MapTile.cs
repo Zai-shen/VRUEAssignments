@@ -1,15 +1,17 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace VRUEAssignments.Map
 {
     public class MapTile : MonoBehaviour
     {
+        public MapTileSO MapTileSo;
+        
         [SerializeField] private MapTileType _mapTileType;
         [SerializeField] private float _cellSize;
         
-        private MapTileSO _mapTileSo;
         private GameObject _mesh;
         
         public void SetType(MapTileType mapTileType)
@@ -24,11 +26,15 @@ namespace VRUEAssignments.Map
             switch (_mapTileType)
             {
                 case MapTileType.PATH:
-                    // TODO fix this to take corners too
-                    _mapTileSo = MapTileSoLoader.GetRandomStraightPathSo();
+                    // TODO fix this
+                    MapTileSo = Random.Range(0,2) == 0 ? 
+                        MapResourceLoader.GetRandomStraightPathSo() : MapResourceLoader.GetRandomCornerPathSo();
                     break;
                 case MapTileType.BASE:
-                    _mapTileSo = MapTileSoLoader.GetRandomBaseSo();
+                    MapTileSo = MapResourceLoader.GetRandomBaseSo();
+                    break;
+                case MapTileType.TELEPORT:
+                    MapTileSo = MapResourceLoader.GetRandomTeleportSo();
                     break;
                 case MapTileType.EMPTY:
                 default:
@@ -39,8 +45,8 @@ namespace VRUEAssignments.Map
 
         public void Init(Vector3 position)
         {
-            _mesh = Instantiate(_mapTileSo.TilePrefab, transform);
-            _mesh.name = _mapTileSo.Name;
+            _mesh = Instantiate(MapTileSo.TilePrefab, transform);
+            _mesh.name = MapTileSo.Name;
             _mesh.transform.position = position + new Vector3(_cellSize,_cellSize,_cellSize) / 2f;
             _mesh.transform.localScale *= _cellSize;
         }

@@ -84,7 +84,7 @@ namespace VRUEAssignments.Map
                    && pos.x < _gridSize.x && pos.y < _gridSize.y && pos.z < _gridSize.z;
         }
 
-        private void SetGridObject(Vector3Int pos, T value)
+        private void SetGridObjectLocal(Vector3Int pos, T value)
         {
             if (IsPositionInGrid(pos))
             {
@@ -97,9 +97,9 @@ namespace VRUEAssignments.Map
             }
         }
 
-        public void SetGridObject(Vector3 worldPosition, T value)
+        public void SetGridObjectWorld(Vector3 worldPosition, T value)
         {
-            SetGridObject(GetGridPosition(worldPosition), value);
+            SetGridObjectLocal(GetGridPosition(worldPosition), value);
         }
         
         public void TriggerGridObjectChanged(Vector3Int pos)
@@ -107,7 +107,7 @@ namespace VRUEAssignments.Map
             OnGridValueChanged?.Invoke(pos);
         }
         
-        private T GetGridObject(Vector3Int pos)
+        public T GetGridObjectLocal(Vector3Int pos)
         {
             if (IsPositionInGrid(pos))
             {
@@ -120,9 +120,9 @@ namespace VRUEAssignments.Map
             }
         }
 
-        public T GetGridObject(Vector3 worldPosition)
+        public T GetGridObjectWorld(Vector3 worldPosition)
         {
-            return GetGridObject(GetGridPosition(worldPosition));
+            return GetGridObjectLocal(GetGridPosition(worldPosition));
         }
 
         private void DrawDebugLines()

@@ -8,29 +8,30 @@ namespace VRUEAssignments.Map
         private MapTile _mapTile;
         private Transform _mapTileContainer;
         
-        private MapTileType _type;
+        public MapTileType MTType;
         private Grid<MapPart> _grid;
         private Vector3Int _gridPosition;
         private Vector3 _worldPosition;
         private float _cellSize;
         
-        public MapPart(MapTileType startType, Grid<MapPart> grid, Vector3Int gridPosition, float cellSize = 1f)
+        public MapPart(MapTileType startMTType, Grid<MapPart> grid, Vector3Int gridPosition, float cellSize = 1f)
         {
-            _type = startType;
+            MTType = startMTType;
             _grid = grid;
             _gridPosition = gridPosition;
             _worldPosition = _grid.GetWorldPosition(_gridPosition);
             _cellSize = cellSize;
         }
-
-        public MapTileType GetTileType()
+        
+        public MapPart(MapTileType startMTType, Grid<MapPart> grid, Vector3Int gridPosition, Transform mapTileContainer, float cellSize = 1f)
+        :this(startMTType, grid, gridPosition,cellSize)
         {
-            return _type;
+            SetParentContainer(mapTileContainer);
         }
 
         public void ChangeType(MapTileType type)
         {
-            _type = type;
+            MTType = type;
             
             if (MapPartGo)
             {
@@ -44,14 +45,15 @@ namespace VRUEAssignments.Map
 
         private void SetGameObject()
         {
-            switch (_type)
+            switch (MTType)
             {
                 case MapTileType.BASE:
                 case MapTileType.PATH:
-                    MapPartGo = new GameObject($"MapPartGO {_type.ToString()} - {_gridPosition.ToString()}");
+                case MapTileType.TELEPORT:
+                    MapPartGo = new GameObject($"MapPartGO {MTType.ToString()} - {_gridPosition.ToString()}");
                     if (_mapTileContainer != null) MapPartGo.transform.SetParent(_mapTileContainer);
                     _mapTile = MapPartGo.AddComponent<MapTile>();
-                    _mapTile.SetType(_type);
+                    _mapTile.SetType(MTType);
                     _mapTile.SetSize(_cellSize);
                     _mapTile.Init(_worldPosition);
                     break;
@@ -72,7 +74,7 @@ namespace VRUEAssignments.Map
         
         public override string ToString()
         {
-            return $"{_type.ToString()}";
+            return $"{MTType.ToString()}";
         }
     }
 }
