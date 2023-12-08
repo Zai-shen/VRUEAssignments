@@ -22,7 +22,7 @@ namespace VRUEAssignments.Map
             MapTileSoLoader.Init(MapTileSos);
             
             _gamingAreaGrid = new Grid<MapPart>(GridSize, CellSize,
-                (mp, x, y, z) => new MapPart(MapTileType.EMPTY, mp, x, y, z, CellSize),
+                (mp,pos) => new MapPart(MapTileType.EMPTY, mp, pos, CellSize),
                 GridCenter - GridSize / 2, true);
 
             CreateMapTile(GridCenter, MapTileType.BASE);

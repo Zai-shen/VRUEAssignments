@@ -22,10 +22,11 @@ namespace VRUEAssignments.Map
             _worldPosition = _grid.GetWorldPosition(_gridPosition);
             _cellSize = cellSize;
         }
-        
-        public MapPart(MapTileType startType, Grid<MapPart> grid, int x, int y, int z, float cellSize = 1f)
-        :this(startType,grid,new Vector3Int(x,y,z), cellSize)
-        { }
+
+        public MapTileType GetTileType()
+        {
+            return _type;
+        }
 
         public void ChangeType(MapTileType type)
         {
@@ -71,8 +72,7 @@ namespace VRUEAssignments.Map
         
         public override string ToString()
         {
-            return //base.ToString() +
-                _type.ToString();
+            return $"{_type.ToString()}";
         }
     }
 }
