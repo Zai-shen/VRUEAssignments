@@ -33,8 +33,7 @@ namespace VRUEAssignments.Map
             _gamingAreaGrid.OnGridValueChanged += NotifyNeighbours;
 
             CreateMapTile(GridCenter, MapTileType.BASE);
-            // CreateMapTile(GridCenter + Vector3.right * 1 * CellSize, MapTileType.TELEPORT);
-            // CreateMapTile(GridCenter + Vector3.left * 1 * CellSize, MapTileType.PATH);
+            CreateMapTile(GridCenter + Vector3.left * 1 * CellSize, MapTileType.PATH);
             // CreateMapTile(GridCenter + Vector3.left * 2 * CellSize, MapTileType.PATH);
             // CreateMapTile(GridCenter + Vector3.left * 2 * CellSize, MapTileType.PATH);
             // CreateMapTile(GridCenter + Vector3.left * 3 * CellSize + Vector3.forward * 1 * CellSize, MapTileType.PATH);
@@ -48,18 +47,23 @@ namespace VRUEAssignments.Map
         private void NotifyNeighbours(Vector3Int position)
         {
             MapPart mPart = _gamingAreaGrid.GetGridObjectLocal(position);
-            Debug.Log($"Object changed on: {position.ToString()}");
-            Debug.Log($"It has value: {mPart.MTType}");
             
             if (mPart.MTType is MapTileType.TELEPORT or MapTileType.EMPTY) return;
 
+            bool didConnect = false;
             List<MapPart> neighbours = GetNeighbours(position);
             foreach (MapPart mP in neighbours)
             {
-                Debug.Log($"Notifying neigbour {mP.ToString()}");
                 if (mP.MTType == MapTileType.EMPTY)
                 {
                     mP.ChangeType(MapTileType.TELEPORT);
+                }
+                else if (mP.MTType == MapTileType.TELEPORT)
+                {
+                    continue;
+                }else if (!didConnect)
+                {
+                    didConnect = mPart.MapTile.TryConnectTo(mP.MapTile);
                 }
             }
         }
@@ -113,8 +117,8 @@ namespace VRUEAssignments.Map
                     worldPos = Camera.main.ScreenToWorldPoint(new Vector3(Mouse.current.position.value.x, Mouse.current.position.value.y, Camera.main.nearClipPlane));
                 }
 
-                Debug.Log($"Mouse pos: {Mouse.current.position.value}");
-                Debug.Log($"worldPos {worldPos.ToString()}");
+                // Debug.Log($"Mouse pos: {Mouse.current.position.value}");
+                // Debug.Log($"worldPos {worldPos.ToString()}");
 
                 CreateMapTile(worldPos, MapTileType.PATH);
             }

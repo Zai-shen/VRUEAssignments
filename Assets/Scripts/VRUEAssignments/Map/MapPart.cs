@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace VRUEAssignments.Map
 {
     public class MapPart
     {
         public GameObject MapPartGo;
-        private MapTile _mapTile;
+        public MapTile MapTile;
         private Transform _mapTileContainer;
         
         public MapTileType MTType;
@@ -45,22 +46,14 @@ namespace VRUEAssignments.Map
 
         private void SetGameObject()
         {
-            switch (MTType)
-            {
-                case MapTileType.BASE:
-                case MapTileType.PATH:
-                case MapTileType.TELEPORT:
-                    MapPartGo = new GameObject($"MapPartGO {MTType.ToString()} - {_gridPosition.ToString()}");
-                    if (_mapTileContainer != null) MapPartGo.transform.SetParent(_mapTileContainer);
-                    _mapTile = MapPartGo.AddComponent<MapTile>();
-                    _mapTile.SetType(MTType);
-                    _mapTile.SetSize(_cellSize);
-                    _mapTile.Init(_worldPosition);
-                    break;
-                case MapTileType.EMPTY:
-                default:
-                    break;
-            }
+            if (MTType == MapTileType.EMPTY) return;
+            
+            MapPartGo = new GameObject($"MapPartGO {MTType.ToString()} - {_gridPosition.ToString()}");
+            if (_mapTileContainer != null) MapPartGo.transform.SetParent(_mapTileContainer);
+            MapTile = MapPartGo.AddComponent<MapTile>();
+            MapTile.SetType(MTType);
+            MapTile.SetSize(_cellSize);
+            MapTile.Init(_worldPosition);
         }
 
         public void SetParentContainer(Transform container)
