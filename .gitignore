@@ -83,3 +83,4 @@ ProjectSettings/RiderScriptEditorPersistedState.asset
 
 # git lfs weird tmp files
 lfs/tmp/*
+lfs/objects/*
