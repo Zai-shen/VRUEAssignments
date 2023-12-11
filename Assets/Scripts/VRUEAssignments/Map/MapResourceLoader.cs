@@ -10,7 +10,8 @@ namespace VRUEAssignments.Map
         private static List<MapTileSO> _mapTileSos = new ();
         private static readonly List<MapTileSO> _mapTilesBase = new ();
         private static readonly List<MapTileSO> _mapTilesStraightPath = new ();
-        private static readonly List<MapTileSO> _mapTilesCornerPath = new ();
+        private static readonly List<MapTileSO> _mapTilesCornerRightPath = new ();
+        private static readonly List<MapTileSO> _mapTilesCornerLeftPath = new ();
         private static readonly List<MapTileSO> _mapTilesTeleport = new ();
         
         public static void Init(IEnumerable<MapTileSO> mapTileSos)
@@ -24,9 +25,13 @@ namespace VRUEAssignments.Map
                         {
                             _mapTilesStraightPath.Add(mpSo);
                         }
+                        else if (IsRightCorner(mpSo.MobEntry, mpSo.MobExit))
+                        {
+                            _mapTilesCornerRightPath.Add(mpSo);
+                        }
                         else
                         {
-                            _mapTilesCornerPath.Add(mpSo);
+                            _mapTilesCornerLeftPath.Add(mpSo);
                         }
                         break;
                     case MapTileType.BASE:
@@ -56,10 +61,16 @@ namespace VRUEAssignments.Map
             return _mapTilesStraightPath[Random.Range(0,range)];
         }
         
-        public static MapTileSO GetRandomCornerPathSo()
+        public static MapTileSO GetRandomCornerRightPathSo()
         {
-            int range = _mapTilesCornerPath.Count;
-            return _mapTilesCornerPath[Random.Range(0,range)];
+            int range = _mapTilesCornerRightPath.Count;
+            return _mapTilesCornerRightPath[Random.Range(0,range)];
+        }
+        
+        public static MapTileSO GetRandomCornerLeftPathSo()
+        {
+            int range = _mapTilesCornerLeftPath.Count;
+            return _mapTilesCornerLeftPath[Random.Range(0,range)];
         }
         
         public static MapTileSO GetRandomTeleportSo()
@@ -75,5 +86,15 @@ namespace VRUEAssignments.Map
                    || (entry == XZCoords.LEFT && exit == XZCoords.RIGHT)
                    || (entry == XZCoords.RIGHT && exit == XZCoords.LEFT);
         }
+        
+        private static bool IsRightCorner(XZCoords entry, XZCoords exit)
+        {
+            return (entry == XZCoords.UP && exit == XZCoords.RIGHT)
+                   || (entry == XZCoords.RIGHT && exit == XZCoords.DOWN)
+                   || (entry == XZCoords.DOWN && exit == XZCoords.LEFT)
+                   || (entry == XZCoords.LEFT && exit == XZCoords.UP);
+        }
+        
+        
     }
 }

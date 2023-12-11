@@ -30,8 +30,14 @@ namespace VRUEAssignments.Map
                 case MapTileType.PATH:
                     // TODO fix this
                     // MapTileSo = MapResourceLoader.GetRandomCornerPathSo();
-                    MapTileSo = Random.Range(0,2) == 0 ? 
-                        MapResourceLoader.GetRandomStraightPathSo() : MapResourceLoader.GetRandomCornerPathSo();
+                    int kind = Random.Range(0, 3);
+                    MapTileSo = kind switch
+                    {
+                        0 => MapResourceLoader.GetRandomStraightPathSo(),
+                        1 => MapResourceLoader.GetRandomCornerRightPathSo(),
+                        2 => MapResourceLoader.GetRandomCornerLeftPathSo(),
+                        _ => MapTileSo
+                    };
                     break;
                 case MapTileType.BASE:
                     MapTileSo = MapResourceLoader.GetRandomBaseSo();
@@ -86,7 +92,7 @@ namespace VRUEAssignments.Map
             }
 
             Debug.Log($"Thispos{transform.position} otherpos{other.transform.position}");
-            Debug.Log($"Could NOT connect this {gameObject.name} with MobExit {MobExit} to {other.gameObject.name} with Mobentry {other.MobEntry}");
+            Debug.LogWarning($"Could NOT connect this {gameObject.name} with MobExit {MobExit} to {other.gameObject.name} with Mobentry {other.MobEntry}");
             return false;
         }
 
