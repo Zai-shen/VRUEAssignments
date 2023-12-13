@@ -76,6 +76,7 @@ namespace VRUEAssignments.XR
             {
                 InitVRControllers();
             }
+            
             if (leftController.TryGetFeatureValue(CommonUsages.deviceVelocity, out var velocityL)
                 && rightController.TryGetFeatureValue(CommonUsages.deviceVelocity, out var velocityR))
             {

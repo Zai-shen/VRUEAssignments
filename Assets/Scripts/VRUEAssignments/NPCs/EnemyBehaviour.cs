@@ -31,7 +31,12 @@ namespace VRUEAssignments.NPCs
 
             }
 
-        
+            if (other.gameObject.tag.Equals("Bullet"))
+            {
+                StartCoroutine(blinkAndDestroy());
+            }
+
+
         }
 
         private void OnCollisionEnter(Collision collision)

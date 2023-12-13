@@ -39,12 +39,16 @@ namespace VRUEAssignments.NPCs
 
         private void OnTriggerEnter(Collider other)
         {
-            Destroy(this);
+            if (!other.gameObject.tag.Equals("Tower") && !other.gameObject.tag.Equals("SnapArea"))
+            {
+                Destroy(this.gameObject);
+
+            }
         }
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (!collision.gameObject.tag.Equals("Tower"))
+            if (!collision.gameObject.tag.Equals("Tower") && !collision.gameObject.tag.Equals("SnapArea"))
             {
                 Destroy(this.gameObject);
 
