@@ -27,16 +27,16 @@ namespace VRUEAssignments.Map
         private void Start()
         {
             _gamingAreaGrid = new Grid<MapPart>(GridSize, CellSize,
-                (mp,pos) => new MapPart(MapTileType.EMPTY, mp, pos, MapTileContainer ,CellSize),
+                (grid, pos) => new MapPart(MapResourceLoader.GetEmptySo(), grid, pos, MapTileContainer),
                 GridCenter - GridSize / 2, true);
             
             _gamingAreaGrid.OnGridValueChanged += NotifyNeighbours;
 
-            CreateMapTile(GridCenter, MapTileType.BASE);
-            CreateMapTile(GridCenter + Vector3.left * 1 * CellSize, MapTileType.PATH);
-            // CreateMapTile(GridCenter + Vector3.left * 2 * CellSize, MapTileType.PATH);
-            // CreateMapTile(GridCenter + Vector3.left * 2 * CellSize, MapTileType.PATH);
-            // CreateMapTile(GridCenter + Vector3.left * 3 * CellSize + Vector3.forward * 1 * CellSize, MapTileType.PATH);
+            CreateMapTile(GridCenter, MapResourceLoader.GetBaseSo());
+            CreateMapTile(GridCenter + Vector3.left * 1 * CellSize, MapResourceLoader.GetRandomStraightPathSo());
+            CreateMapTile(GridCenter + Vector3.left * 2 * CellSize, MapResourceLoader.GetRandomCornerRightPathSo());
+            CreateMapTile(GridCenter + Vector3.left * 2 * CellSize + Vector3.forward * 1 * CellSize, MapResourceLoader.GetRandomCornerRightPathSo());
+            CreateMapTile(GridCenter + Vector3.left * 1 * CellSize + Vector3.forward * 1 * CellSize, MapResourceLoader.GetRandomCornerLeftPathSo());
             
             if (DebugInEditor)
             {
@@ -48,23 +48,30 @@ namespace VRUEAssignments.Map
         {
             MapPart mPart = _gamingAreaGrid.GetGridObjectLocal(position);
             
-            if (mPart.MTType is MapTileType.TELEPORT or MapTileType.EMPTY) return;
+            if (mPart.MapTSo.MapTType is MapTileType.TELEPORT or MapTileType.EMPTY) return;
 
             bool didConnect = false;
             List<MapPart> neighbours = GetNeighbours(position);
             foreach (MapPart mP in neighbours)
             {
-                if (mP.MTType == MapTileType.EMPTY)
+                if (mP.MapTSo.MapTType == MapTileType.EMPTY)
                 {
-                    mP.ChangeType(MapTileType.TELEPORT);
+                    mP.ChangeType(MapResourceLoader.GetRandomTeleportSo());
                 }
-                else if (mP.MTType == MapTileType.TELEPORT)
+                else if (mP.MapTSo.MapTType == MapTileType.TELEPORT)
                 {
                     continue;
                 }else if (!didConnect)
                 {
-                    didConnect = mPart.MapTile.TryConnectTo(mP.MapTile);
+                    // TODO didConnect = mPart.MapTile.TryConnectTo(mP.MapTile);
+                    didConnect = mPart.ConnectTo(mP);
                 }
+            }
+
+            if (!didConnect && mPart.MapTSo.MapTType != MapTileType.BASE)
+            {
+                Debug.LogWarning($"Destroying {mPart.MapPartGo}");
+                mPart.Clear();
             }
         }
 
@@ -86,7 +93,7 @@ namespace VRUEAssignments.Map
             neighbours.Add(temp);
         }
 
-        private MapPart CreateMapTile(Vector3 worldPosition, MapTileType mapTileType)
+        private bool CreateMapTile(Vector3 worldPosition, MapTileSO mapTileSo)
         {
             MapPart mPart = _gamingAreaGrid.GetGridObjectWorld(worldPosition);
             if (mPart == null)
@@ -95,10 +102,9 @@ namespace VRUEAssignments.Map
                 return default;
             }
             
-            mPart.ChangeType(mapTileType);
-            mPart.SetParentContainer(MapTileContainer.transform);
+            mPart.ChangeType(mapTileSo);
             
-            return mPart;
+            return mPart.MapCon.IsConnectedWithTO();
         }
 
         private void Update()
@@ -120,7 +126,7 @@ namespace VRUEAssignments.Map
                 // Debug.Log($"Mouse pos: {Mouse.current.position.value}");
                 // Debug.Log($"worldPos {worldPos.ToString()}");
 
-                CreateMapTile(worldPos, MapTileType.PATH);
+                CreateMapTile(worldPos, MapResourceLoader.GetRandomPath());
             }
         }
     }

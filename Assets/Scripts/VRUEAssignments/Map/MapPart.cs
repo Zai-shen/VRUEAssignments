@@ -7,32 +7,51 @@ namespace VRUEAssignments.Map
     {
         public GameObject MapPartGo;
         public MapTile MapTile;
+        public MapTileSO MapTSo;
+        public MapConnection MapCon;
+
         private Transform _mapTileContainer;
         
-        public MapTileType MTType;
         private Grid<MapPart> _grid;
         private Vector3Int _gridPosition;
         private Vector3 _worldPosition;
         private float _cellSize;
         
-        public MapPart(MapTileType startMTType, Grid<MapPart> grid, Vector3Int gridPosition, float cellSize = 1f)
+        public MapPart(MapTileSO defaultMapTSo, Grid<MapPart> grid, Vector3Int gridPosition)
         {
-            MTType = startMTType;
+            MapTSo = defaultMapTSo;
             _grid = grid;
             _gridPosition = gridPosition;
             _worldPosition = _grid.GetWorldPosition(_gridPosition);
-            _cellSize = cellSize;
+            _cellSize = grid.CellSize;
+            
+            MapCon = new MapConnection(this);
         }
         
-        public MapPart(MapTileType startMTType, Grid<MapPart> grid, Vector3Int gridPosition, Transform mapTileContainer, float cellSize = 1f)
-        :this(startMTType, grid, gridPosition,cellSize)
+        public MapPart(MapTileSO defaultMapTSo, Grid<MapPart> grid, Vector3Int gridPosition, Transform mapTileContainer)
+        :this(defaultMapTSo, grid, gridPosition)
         {
             SetParentContainer(mapTileContainer);
         }
 
-        public void ChangeType(MapTileType type)
+        public bool ConnectTo(MapPart mapPart)
         {
-            MTType = type;
+            MapCon.ToMP = mapPart;
+            bool didConnect = MapCon.ConnectTo();
+            if (didConnect)
+            {
+                MapTile.RotateY(MapCon.TargetRotation);
+            }
+            else
+            {
+                MapCon.ToMP = null;
+            }
+            return didConnect;
+        }
+
+        public void ChangeType(MapTileSO mapTileSo)
+        {
+            MapTSo = mapTileSo;
             
             if (MapPartGo)
             {
@@ -46,14 +65,16 @@ namespace VRUEAssignments.Map
 
         private void SetGameObject()
         {
-            if (MTType == MapTileType.EMPTY) return;
+            if (MapTSo.MapTType == MapTileType.EMPTY) return;
             
-            MapPartGo = new GameObject($"MapPartGO {MTType.ToString()} - {_gridPosition.ToString()}");
+            MapPartGo = new GameObject($"MapPartGO {MapTSo.MapTType.ToString()} - {_gridPosition.ToString()}");
             if (_mapTileContainer != null) MapPartGo.transform.SetParent(_mapTileContainer);
             MapTile = MapPartGo.AddComponent<MapTile>();
-            MapTile.SetType(MTType);
+            MapCon.SetMobEntryExit();
+            MapTile.MapTileSo = MapTSo;
             MapTile.SetSize(_cellSize);
-            MapTile.Init(_worldPosition);
+            MapTile.Init();
+            MapTile.SetRelativePosition(_worldPosition);
         }
 
         public void SetParentContainer(Transform container)
@@ -64,10 +85,21 @@ namespace VRUEAssignments.Map
                 MapPartGo.transform.SetParent(_mapTileContainer);
             }
         }
+
+        public Vector3Int GetGridPosition()
+        {
+            return _gridPosition;
+        }
+
+        public void Clear()
+        {
+            MapCon.Clear();
+            GameObject.Destroy(MapPartGo);
+        }
         
         public override string ToString()
         {
-            return $"{MTType.ToString()}";
+            return $"{MapTSo.ToString()}";
         }
     }
 }

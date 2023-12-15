@@ -8,7 +8,8 @@ namespace VRUEAssignments.Map
     public static class MapResourceLoader
     {
         private static List<MapTileSO> _mapTileSos = new ();
-        private static readonly List<MapTileSO> _mapTilesBase = new ();
+        private static MapTileSO _mapTileEmpty;
+        private static MapTileSO _mapTileBase;
         private static readonly List<MapTileSO> _mapTilesStraightPath = new ();
         private static readonly List<MapTileSO> _mapTilesCornerRightPath = new ();
         private static readonly List<MapTileSO> _mapTilesCornerLeftPath = new ();
@@ -35,24 +36,42 @@ namespace VRUEAssignments.Map
                         }
                         break;
                     case MapTileType.BASE:
-                        _mapTilesBase.Add(mpSo);
+                        _mapTileBase = mpSo;
                         break;
                     case MapTileType.TELEPORT:
                         _mapTilesTeleport.Add(mpSo);
                         break;
                     case MapTileType.EMPTY:
+                        _mapTileEmpty = mpSo;
+                        break;
                     default:
-                        Debug.LogWarning("MapTileSOLoader: MapTileSO.MapTileType should not be empty!");
+                        Debug.LogWarning($"MapTileSOLoader: MapTileSO.MapTileType should not be {mpSo.MapTType}");
                         break;
                 }
                 _mapTileSos.Add(mpSo);
             }
         }
 
-        public static MapTileSO GetRandomBaseSo()
+        public static MapTileSO GetBaseSo()
         {
-            int range = _mapTilesBase.Count;
-            return _mapTilesBase[Random.Range(0,range)];
+            return _mapTileBase;
+        }
+
+        public static MapTileSO GetEmptySo()
+        {
+            return _mapTileEmpty;
+        }
+
+        public static MapTileSO GetRandomPath()
+        {
+            int kind = Random.Range(0, 3);
+            return kind switch
+            {
+                0 => GetRandomStraightPathSo(),
+                1 => GetRandomCornerRightPathSo(),
+                2 => GetRandomCornerLeftPathSo(),
+                _ => throw new IndexOutOfRangeException()
+            };
         }
         
         public static MapTileSO GetRandomStraightPathSo()

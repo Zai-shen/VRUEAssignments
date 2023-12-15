@@ -1970,16 +1970,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DebugInEditor: 1
   TopCamera: {fileID: 40403664}
-  GridCenter: {x: 0, y: 0, z: 5}
+  GridCenter: {x: 0, y: 0, z: 1}
   GridSize: {x: 25, y: 1, z: 25}
   CellSize: 1
   MapTileContainer: {fileID: 133582470}
   MapTileSos:
+  - {fileID: 11400000, guid: 00c62dac64b03b0438ec6e5f656ebbfe, type: 2}
   - {fileID: 11400000, guid: 4b93fc06faa23ab4a99297fe25febe07, type: 2}
+  - {fileID: 11400000, guid: c5ccecda62c556640885c111351e5ddf, type: 2}
+  - {fileID: 11400000, guid: 7583b1b50641eec41812be9eb7eb27ac, type: 2}
   - {fileID: 11400000, guid: 967617a721993664ebde957e43514f75, type: 2}
   - {fileID: 11400000, guid: d71a0113afd956049ae8948e2c658f7f, type: 2}
-  - {fileID: 11400000, guid: 7583b1b50641eec41812be9eb7eb27ac, type: 2}
-  - {fileID: 11400000, guid: c5ccecda62c556640885c111351e5ddf, type: 2}
 --- !u!1001 &1849692611
 PrefabInstance:
   m_ObjectHideFlags: 0

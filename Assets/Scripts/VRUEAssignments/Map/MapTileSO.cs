@@ -11,5 +11,10 @@ namespace VRUEAssignments.Map
         public MapTileType MapTType;
         public XZCoords MobEntry;
         public XZCoords MobExit;
+
+        public override string ToString()
+        {
+            return $"{Name}";
+        }
     }
 }

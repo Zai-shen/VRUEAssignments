@@ -7,12 +7,12 @@ namespace VRUEAssignments.Map
     public class Grid<T>
     {
         public Action<Vector3Int> OnGridValueChanged;
+        public float CellSize;
 
         private Vector3 _originPosition;
 
         private Vector3Int _gridSize;
         private T[,,] _gridArray;
-        private float _cellSize;
 
         private bool _debug;
         private GameObject[,,] _gridDebugArray;
@@ -23,7 +23,7 @@ namespace VRUEAssignments.Map
             _originPosition = originPosition;
             _gridSize = size;
             _gridArray = new T[_gridSize.x, _gridSize.y, _gridSize.z];
-            _cellSize = cellSize;
+            CellSize = cellSize;
             _debug = debug;
             
             Init(CreateGridObject);
@@ -64,7 +64,7 @@ namespace VRUEAssignments.Map
 
         public Vector3 GetWorldPosition(Vector3 position)
         {
-            return position * _cellSize + _originPosition;
+            return position * CellSize + _originPosition;
         }
 
         public Vector3 GetWorldPosition(int x, int y, int z)
@@ -74,7 +74,7 @@ namespace VRUEAssignments.Map
 
         private Vector3Int GetGridPosition(Vector3 worldPosition)
         {
-            Vector3 position = (worldPosition - _originPosition) / _cellSize;
+            Vector3 position = (worldPosition - _originPosition) / CellSize;
             return Vector3Int.FloorToInt(position);
         }
         
@@ -170,7 +170,7 @@ namespace VRUEAssignments.Map
                     { 
                         _gridDebugArray[x, y, z] = new GameObject("DebugText - " + $"x:{x} , y: {y} , z: {y}");
                         _gridDebugArray[x, y, z].transform.SetParent(gridDebugContainer.transform);
-                        _gridDebugArray[x, y, z].transform.position = GetWorldPosition(x, y, z) + new Vector3(_cellSize,_cellSize,_cellSize) / 2f;
+                        _gridDebugArray[x, y, z].transform.position = GetWorldPosition(x, y, z) + new Vector3(CellSize,CellSize,CellSize) / 2f;
                         TextMeshPro tmpText = _gridDebugArray[x,y,z].AddComponent<TextMeshPro>();
                         tmpText.fontSize = 1.5f;
                         tmpText.alignment = TextAlignmentOptions.Center;
