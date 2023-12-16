@@ -1976,6 +1976,7 @@ MonoBehaviour:
   MapTileContainer: {fileID: 133582470}
   MapTileSos:
   - {fileID: 11400000, guid: 00c62dac64b03b0438ec6e5f656ebbfe, type: 2}
+  - {fileID: 11400000, guid: 2638e6e5f8a2a694c95997670c5015dd, type: 2}
   - {fileID: 11400000, guid: 4b93fc06faa23ab4a99297fe25febe07, type: 2}
   - {fileID: 11400000, guid: c5ccecda62c556640885c111351e5ddf, type: 2}
   - {fileID: 11400000, guid: 7583b1b50641eec41812be9eb7eb27ac, type: 2}

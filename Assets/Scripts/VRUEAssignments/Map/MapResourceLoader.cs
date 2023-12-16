@@ -13,7 +13,8 @@ namespace VRUEAssignments.Map
         private static readonly List<MapTileSO> _mapTilesStraightPath = new ();
         private static readonly List<MapTileSO> _mapTilesCornerRightPath = new ();
         private static readonly List<MapTileSO> _mapTilesCornerLeftPath = new ();
-        private static readonly List<MapTileSO> _mapTilesTeleport = new ();
+        private static MapTileSO _mapTileTeleport;
+        private static MapTileSO _mapTileNext;
         
         public static void Init(IEnumerable<MapTileSO> mapTileSos)
         {
@@ -39,10 +40,13 @@ namespace VRUEAssignments.Map
                         _mapTileBase = mpSo;
                         break;
                     case MapTileType.TELEPORT:
-                        _mapTilesTeleport.Add(mpSo);
+                        _mapTileTeleport = mpSo;
                         break;
                     case MapTileType.EMPTY:
                         _mapTileEmpty = mpSo;
+                        break;
+                    case MapTileType.NEXT:
+                        _mapTileNext = mpSo;
                         break;
                     default:
                         Debug.LogWarning($"MapTileSOLoader: MapTileSO.MapTileType should not be {mpSo.MapTType}");
@@ -60,6 +64,11 @@ namespace VRUEAssignments.Map
         public static MapTileSO GetEmptySo()
         {
             return _mapTileEmpty;
+        }
+
+        public static MapTileSO GetNextSo()
+        {
+            return _mapTileNext;
         }
 
         public static MapTileSO GetRandomPath()
@@ -94,8 +103,7 @@ namespace VRUEAssignments.Map
         
         public static MapTileSO GetRandomTeleportSo()
         {
-            int range = _mapTilesTeleport.Count;
-            return _mapTilesTeleport[Random.Range(0,range)];
+            return _mapTileTeleport;
         }
         
         private static bool IsStraight(XZCoords entry, XZCoords exit)

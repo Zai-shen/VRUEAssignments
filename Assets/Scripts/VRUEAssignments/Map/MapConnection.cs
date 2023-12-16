@@ -31,11 +31,13 @@ namespace VRUEAssignments.Map
         {
             if (FromMP != null)
             {
+                Debug.Log($"Clearing fromMP: {FromMP},{FromMP.MapCon.ToMP}");
                 FromMP.MapCon.ToMP = null;
                 FromMP = null;
             }
             if (ToMP != null)
             {
+                Debug.Log($"Clearing toMP: {ToMP},{ToMP.MapCon.FromMP}");
                 ToMP.MapCon.FromMP = null;
                 ToMP = null;
             }
@@ -45,34 +47,11 @@ namespace VRUEAssignments.Map
         {
             return ToMP != null;
         }
-        
-        // public bool TryConnectTo(MapTile other)
-        // {
-        //     bool clockWise = Random.value > 0.5f;
-        //
-        //     for (int i = 0; i < 4; i++)
-        //     {
-        //         if (IsConnectable(this.MobExit, other.MobEntry, other))
-        //         {
-        //             Debug.Log($"Connecting this {gameObject.name} with MobExit {MobExit} to {other.gameObject.name} with Mobentry {other.MobEntry}");
-        //             transform.Rotate(Vector3.up, (clockWise ? 90f : -90f) * i);
-        //             return true;
-        //         }
-        //         
-        //         if (clockWise)
-        //         {
-        //             RotateClockWise();
-        //         }
-        //         else
-        //         {
-        //             RotateCounterClockWise();
-        //         }
-        //     }
-        //
-        //     // Debug.Log($"Thispos{transform.position} otherpos{other.transform.position}");
-        //     Debug.LogWarning($"Could NOT connect this {gameObject.name} with MobExit {MobExit} to {other.gameObject.name} with Mobentry {other.MobEntry}");
-        //     return false;
-        // }
+
+        public bool IsConnectedWithFrom()
+        {
+            return FromMP != null;
+        }
         
         private XZCoords RotateXZCoordinateCW(XZCoords coord)
         {
@@ -88,6 +67,8 @@ namespace VRUEAssignments.Map
                     return XZCoords.UP;
                 case XZCoords.CENTER:
                     return XZCoords.CENTER;
+                case XZCoords.NONE:
+                    return XZCoords.NONE;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(coord), coord, null);
             }
@@ -103,24 +84,73 @@ namespace VRUEAssignments.Map
 
         public bool ConnectTo()
         {
+            bool did = CouldConnectTo(out float i);
+            if (did)
+            {
+                TargetRotation = i;
+                ToMP.MapCon.FromMP = ThisMP;
+            }
+            return did;
+        }
+        
+        public bool CouldConnectTo(out float rot)
+        {
             XZCoords toMobEntry = ToMP.MapCon.MobEntry;
             
             for (int i = 0; i < 4; i++)
             {
-                if (IsConnectable(MobExit, toMobEntry) && IsPlacedRight(MobExit, ThisMP, ToMP))
+                if (IsConnectable(MobExit, toMobEntry) && IsPlacedRight(MobExit, ThisMP, ToMP))// && HasEmptyExit(MobExit, ThisMP))
                 {
                     Debug.Log($"Did connect From:{ThisMP} with MobExit {MobExit} - to To:{ToMP} with Mobentry {toMobEntry}");
-                    TargetRotation = 90f * i;
-                    ToMP.MapCon.FromMP = ThisMP;
+                    rot = 90f * i;
                     return true;
                 }
-                Debug.Log($"Tried but failed: this {ThisMP} with MobExit {MobExit} - to {ToMP} with Mobentry {toMobEntry}");
+                // Debug.Log($"Tried but failed: this {ThisMP} with MobExit {MobExit} - to {ToMP} with Mobentry {toMobEntry}");
                 MobExit = RotateXZCoordinateCW(MobExit);
                 MobEntry = RotateXZCoordinateCW(MobEntry);
             }
 
-            Debug.LogWarning($"Could NOT connect From:{ThisMP} To:{ToMP}");
+            Debug.LogWarning($"Could NOT connect From:{ThisMP.MapPartGo} To:{ToMP.MapPartGo}");
+            rot = 0f;
             return false;
+        }
+
+        private bool HasEmptyExit(XZCoords exit, MapPart thisMP)
+        {
+            MapPart mapPart;
+            switch (exit)
+            {
+                case XZCoords.UP:
+                    mapPart = thisMP.GetSibling(thisMP.GetGridPosition() + Vector3Int.up);
+                    break;
+                case XZCoords.RIGHT:
+                    mapPart = thisMP.GetSibling(thisMP.GetGridPosition() + Vector3Int.right);
+                    break;
+     
+                case XZCoords.DOWN:
+                    mapPart = thisMP.GetSibling(thisMP.GetGridPosition() + Vector3Int.down);
+                    break;
+    
+                case XZCoords.LEFT:
+                    mapPart = thisMP.GetSibling(thisMP.GetGridPosition() + Vector3Int.left);
+                    break;
+                case XZCoords.NONE:
+                case XZCoords.CENTER:
+                    return true;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
+            if (mapPart != null)
+            {
+                bool isnotcon = !mapPart.MapCon.IsConnectedWithTO();
+                if (!isnotcon)
+                {
+                    Debug.Log($"mappart is connected: {mapPart}");
+                }
+                return isnotcon;
+            }
+            return true;
         }
 
         private bool IsPlacedRight(XZCoords exit, MapPart from, MapPart to)
@@ -133,8 +163,14 @@ namespace VRUEAssignments.Map
                 XZCoords.LEFT => from.GetGridPosition().x > to.GetGridPosition().x,
                 XZCoords.RIGHT => from.GetGridPosition().x < to.GetGridPosition().x,
                 XZCoords.CENTER => throw new ArgumentOutOfRangeException(),
+                XZCoords.NONE => throw new ArgumentOutOfRangeException(),
                 _ => throw new ArgumentOutOfRangeException()
             };
+        }
+
+        public override string ToString()
+        {
+            return $"MapConnection with From [{FromMP}] - This [{ThisMP}] - To [{ToMP}]";
         }
     }
 }

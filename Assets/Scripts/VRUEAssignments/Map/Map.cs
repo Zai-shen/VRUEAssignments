@@ -19,6 +19,8 @@ namespace VRUEAssignments.Map
         
         private Grid<MapPart> _gamingAreaGrid;
 
+        private bool _isNextTileAvailable;
+        
         private void Awake()
         {
             MapResourceLoader.Init(MapTileSos);
@@ -33,10 +35,11 @@ namespace VRUEAssignments.Map
             _gamingAreaGrid.OnGridValueChanged += NotifyNeighbours;
 
             CreateMapTile(GridCenter, MapResourceLoader.GetBaseSo());
-            CreateMapTile(GridCenter + Vector3.left * 1 * CellSize, MapResourceLoader.GetRandomStraightPathSo());
-            CreateMapTile(GridCenter + Vector3.left * 2 * CellSize, MapResourceLoader.GetRandomCornerRightPathSo());
-            CreateMapTile(GridCenter + Vector3.left * 2 * CellSize + Vector3.forward * 1 * CellSize, MapResourceLoader.GetRandomCornerRightPathSo());
-            CreateMapTile(GridCenter + Vector3.left * 1 * CellSize + Vector3.forward * 1 * CellSize, MapResourceLoader.GetRandomCornerLeftPathSo());
+            // CreateMapTile(GridCenter + Vector3.left * 1 * CellSize, MapResourceLoader.GetNextSo());
+            // CreateMapTile(GridCenter + Vector3.left * 1 * CellSize, MapResourceLoader.GetRandomStraightPathSo());
+            // CreateMapTile(GridCenter + Vector3.left * 2 * CellSize, MapResourceLoader.GetRandomCornerRightPathSo());
+            // CreateMapTile(GridCenter + Vector3.left * 2 * CellSize + Vector3.forward * 1 * CellSize, MapResourceLoader.GetRandomCornerRightPathSo());
+            // CreateMapTile(GridCenter + Vector3.left * 1 * CellSize + Vector3.forward * 1 * CellSize, MapResourceLoader.GetRandomCornerLeftPathSo());
             
             if (DebugInEditor)
             {
@@ -48,30 +51,49 @@ namespace VRUEAssignments.Map
         {
             MapPart mPart = _gamingAreaGrid.GetGridObjectLocal(position);
             
-            if (mPart.MapTSo.MapTType is MapTileType.TELEPORT or MapTileType.EMPTY) return;
+            if (mPart.MapTSo.MapTType is MapTileType.TELEPORT or MapTileType.EMPTY or MapTileType.NEXT) return;
 
+            _isNextTileAvailable = false;
             bool didConnect = false;
+            
             List<MapPart> neighbours = GetNeighbours(position);
             foreach (MapPart mP in neighbours)
             {
                 if (mP.MapTSo.MapTType == MapTileType.EMPTY)
                 {
-                    mP.ChangeType(MapResourceLoader.GetRandomTeleportSo());
+                    mP.ChangeSilent(MapResourceLoader.GetRandomTeleportSo());
+                    mP.SetGameObject();
                 }
                 else if (mP.MapTSo.MapTType == MapTileType.TELEPORT)
                 {
                     continue;
                 }else if (!didConnect)
                 {
-                    // TODO didConnect = mPart.MapTile.TryConnectTo(mP.MapTile);
                     didConnect = mPart.ConnectTo(mP);
                 }
             }
 
-            if (!didConnect && mPart.MapTSo.MapTType != MapTileType.BASE)
+            foreach (MapPart mP in neighbours)
+            {
+                if (mP.MapTSo.MapTType == MapTileType.TELEPORT)
+                {
+                    if (mP.CouldConnectTo(mPart))
+                    {
+                        mP.ChangeSilent(MapResourceLoader.GetNextSo());
+                        mP.SetGameObject();
+                        _isNextTileAvailable = true;
+                        break;
+                    }
+                }
+            }
+
+            if (mPart.MapTSo.MapTType == MapTileType.BASE) return;
+
+            if (!_isNextTileAvailable && !didConnect)
             {
                 Debug.LogWarning($"Destroying {mPart.MapPartGo}");
                 mPart.Clear();
+                return;
             }
         }
 
@@ -102,7 +124,7 @@ namespace VRUEAssignments.Map
                 return default;
             }
             
-            mPart.ChangeType(mapTileSo);
+            mPart.Change(mapTileSo);
             
             return mPart.MapCon.IsConnectedWithTO();
         }
@@ -126,8 +148,83 @@ namespace VRUEAssignments.Map
                 // Debug.Log($"Mouse pos: {Mouse.current.position.value}");
                 // Debug.Log($"worldPos {worldPos.ToString()}");
 
-                CreateMapTile(worldPos, MapResourceLoader.GetRandomPath());
+                CreateMapTile(worldPos, ChooseMapTileSO(worldPos));
             }
+        }
+
+        private MapTileSO ChooseMapTileSO(Vector3 worldPos)
+        {
+            MapPart mPart = _gamingAreaGrid.GetGridObjectWorld(worldPos);
+            MapTileSO possibleTile = null;
+            
+            
+            
+            mPart.Change(MapResourceLoader.GetRandomCornerRightPathSo());
+            if (_isNextTileAvailable)
+            {
+                return MapResourceLoader.GetRandomCornerRightPathSo();
+            }
+
+            mPart.Change(MapResourceLoader.GetRandomStraightPathSo());
+            if (_isNextTileAvailable)
+            {
+                return MapResourceLoader.GetRandomStraightPathSo();
+            }
+
+            mPart.Change(MapResourceLoader.GetRandomCornerLeftPathSo());
+            if (_isNextTileAvailable)
+            {
+                return MapResourceLoader.GetRandomCornerLeftPathSo();
+            }
+
+            Debug.LogWarning("No maptileso found that fits");
+            return null;
+
+            // List<MapPart> neighbours = GetNeighbours(mPart.GetGridPosition());
+            //
+            // MapTileSO straightOnly = MapResourceLoader.GetRandomStraightPathSo();
+            // MapTileSO rightOnly = MapResourceLoader.GetRandomCornerRightPathSo();
+            //
+            //
+            // bool didChange = false;
+            //
+            // mPart.ChangeSilent(rightOnly);
+            // foreach (MapPart mP in neighbours)
+            // {
+            //     Debug.Log(mP.MapTSo);
+            //     if (mP.MapTSo.MapTType is MapTileType.TELEPORT or MapTileType.EMPTY)
+            //     {
+            //         if (mP.CouldConnectTo(mPart)) 
+            //         {
+            //             mP.Change(MapResourceLoader.GetNextSo());
+            //             didChange = true;
+            //             possibleTile = rightOnly;
+            //             break;
+            //         }
+            //     }
+            // }
+            //
+            // if (!didChange)
+            // {
+            //     mPart.ChangeSilent(straightOnly);
+            //
+            //     foreach (MapPart mP in neighbours)
+            //     {
+            //         if (mP.MapTSo.MapTType is MapTileType.TELEPORT or MapTileType.EMPTY)
+            //         {
+            //             if (mP.CouldConnectTo(mPart))
+            //             {
+            //                 mP.Change(MapResourceLoader.GetNextSo());
+            //                 didChange = true;
+            //                 possibleTile = straightOnly;
+            //                 break;
+            //             }
+            //         }
+            //     }
+            // }
+            
+            return possibleTile;
+            // return MapResourceLoader.GetRandomPath();
         }
     }
 }

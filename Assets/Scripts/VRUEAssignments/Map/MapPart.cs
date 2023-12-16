@@ -34,8 +34,23 @@ namespace VRUEAssignments.Map
             SetParentContainer(mapTileContainer);
         }
 
+        public MapPart GetSibling(Vector3Int gridPosition)
+        {
+            return _grid.GetGridObjectLocal(gridPosition);
+        }
+
+        public bool CouldConnectTo(MapPart mapPart)
+        {
+            MapPart prev = MapCon.ToMP;
+            MapCon.ToMP = mapPart;
+            bool didConnect = MapCon.CouldConnectTo(out float i);
+            MapCon.ToMP = prev;
+            return didConnect;
+        }
+        
         public bool ConnectTo(MapPart mapPart)
         {
+            MapPart prev = MapCon.ToMP;
             MapCon.ToMP = mapPart;
             bool didConnect = MapCon.ConnectTo();
             if (didConnect)
@@ -44,33 +59,38 @@ namespace VRUEAssignments.Map
             }
             else
             {
-                MapCon.ToMP = null;
+                MapCon.ToMP = prev;
             }
+            Debug.Log($"ConnectTo: This {MapCon} to other {mapPart.MapCon}");
+            
             return didConnect;
         }
 
-        public void ChangeType(MapTileSO mapTileSo)
+        public void ChangeSilent(MapTileSO mapTileSo)
         {
             MapTSo = mapTileSo;
-            
+            MapCon.SetMobEntryExit();
+        }
+        
+        public void Change(MapTileSO mapTileSo)
+        {
+            ChangeSilent(mapTileSo);
+            SetGameObject();
+            _grid.TriggerGridObjectChanged(_gridPosition);
+        }
+
+        public void SetGameObject()
+        { 
             if (MapPartGo)
             {
                 GameObject.Destroy(MapPartGo);
             }
-
-            SetGameObject();
             
-            _grid.TriggerGridObjectChanged(_gridPosition);
-        }
-
-        private void SetGameObject()
-        {
             if (MapTSo.MapTType == MapTileType.EMPTY) return;
             
             MapPartGo = new GameObject($"MapPartGO {MapTSo.MapTType.ToString()} - {_gridPosition.ToString()}");
             if (_mapTileContainer != null) MapPartGo.transform.SetParent(_mapTileContainer);
             MapTile = MapPartGo.AddComponent<MapTile>();
-            MapCon.SetMobEntryExit();
             MapTile.MapTileSo = MapTSo;
             MapTile.SetSize(_cellSize);
             MapTile.Init();
