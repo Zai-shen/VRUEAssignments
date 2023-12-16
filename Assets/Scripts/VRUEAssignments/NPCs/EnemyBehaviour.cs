@@ -47,6 +47,11 @@ namespace VRUEAssignments.NPCs
             }
         }
 
+        public void OnHitByParticle(int damage)
+        {
+            StartCoroutine(blinkAndDestroy());
+        }
+
         IEnumerator blinkAndDestroy()
         {
             objRenderer.material = dieMaterial;

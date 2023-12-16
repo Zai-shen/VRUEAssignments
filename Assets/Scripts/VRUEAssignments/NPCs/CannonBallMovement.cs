@@ -29,6 +29,7 @@ namespace VRUEAssignments.NPCs
             } else if (!this.gameObject.IsDestroyed())
             {
                 Destroy(this.gameObject);
+                Destroy(this);
             }
         }
 
