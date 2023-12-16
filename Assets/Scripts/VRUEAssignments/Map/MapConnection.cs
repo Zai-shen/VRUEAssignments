@@ -31,13 +31,13 @@ namespace VRUEAssignments.Map
         {
             if (FromMP != null)
             {
-                Debug.Log($"Clearing fromMP: {FromMP},{FromMP.MapCon.ToMP}");
+                //Debug.Log($"Clearing fromMP: {FromMP},{FromMP.MapCon.ToMP}");
                 FromMP.MapCon.ToMP = null;
                 FromMP = null;
             }
             if (ToMP != null)
             {
-                Debug.Log($"Clearing toMP: {ToMP},{ToMP.MapCon.FromMP}");
+                //Debug.Log($"Clearing toMP: {ToMP},{ToMP.MapCon.FromMP}");
                 ToMP.MapCon.FromMP = null;
                 ToMP = null;
             }
@@ -101,7 +101,7 @@ namespace VRUEAssignments.Map
             {
                 if (IsConnectable(MobExit, toMobEntry) && IsPlacedRight(MobExit, ThisMP, ToMP))// && HasEmptyExit(MobExit, ThisMP))
                 {
-                    Debug.Log($"Did connect From:{ThisMP} with MobExit {MobExit} - to To:{ToMP} with Mobentry {toMobEntry}");
+                    // Debug.Log($"Did connect From:{ThisMP} with MobExit {MobExit} - to To:{ToMP} with Mobentry {toMobEntry}");
                     rot = 90f * i;
                     return true;
                 }
@@ -110,7 +110,7 @@ namespace VRUEAssignments.Map
                 MobEntry = RotateXZCoordinateCW(MobEntry);
             }
 
-            Debug.LogWarning($"Could NOT connect From:{ThisMP.MapPartGo} To:{ToMP.MapPartGo}");
+            // Debug.LogWarning($"Could NOT connect From:{ThisMP.MapPartGo} To:{ToMP.MapPartGo}");
             rot = 0f;
             return false;
         }
@@ -146,7 +146,7 @@ namespace VRUEAssignments.Map
                 bool isnotcon = !mapPart.MapCon.IsConnectedWithTO();
                 if (!isnotcon)
                 {
-                    Debug.Log($"mappart is connected: {mapPart}");
+                    // Debug.Log($"mappart is connected: {mapPart}");
                 }
                 return isnotcon;
             }

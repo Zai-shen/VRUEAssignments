@@ -40,11 +40,6 @@ namespace VRUEAssignments.Map
             _gamingAreaGrid.OnGridValueChanged += NotifyNeighbours;
 
             CreateMapTile(GridCenter, MapResourceLoader.GetBaseSo());
-            // CreateMapTile(GridCenter + Vector3.left * 1 * CellSize, MapResourceLoader.GetNextSo());
-            // CreateMapTile(GridCenter + Vector3.left * 1 * CellSize, MapResourceLoader.GetRandomStraightPathSo());
-            // CreateMapTile(GridCenter + Vector3.left * 2 * CellSize, MapResourceLoader.GetRandomCornerRightPathSo());
-            // CreateMapTile(GridCenter + Vector3.left * 2 * CellSize + Vector3.forward * 1 * CellSize, MapResourceLoader.GetRandomCornerRightPathSo());
-            // CreateMapTile(GridCenter + Vector3.left * 1 * CellSize + Vector3.forward * 1 * CellSize, MapResourceLoader.GetRandomCornerLeftPathSo());
             
             if (DebugInEditor)
             {
@@ -96,7 +91,7 @@ namespace VRUEAssignments.Map
 
             if (!_isNextTileAvailable && !didConnect)
             {
-                Debug.LogWarning($"Destroying {mPart.MapPartGo}");
+                // Debug.LogWarning($"Destroying {mPart.MapPartGo}");
                 mPart.Clear();
                 return;
             }
@@ -120,18 +115,16 @@ namespace VRUEAssignments.Map
             neighbours.Add(temp);
         }
 
-        private bool CreateMapTile(Vector3 worldPosition, MapTileSO mapTileSo)
+        private void CreateMapTile(Vector3 worldPosition, MapTileSO mapTileSo)
         {
             MapPart mPart = _gamingAreaGrid.GetGridObjectWorld(worldPosition);
             if (mPart == null)
             {
                 Debug.LogWarning($"Could not get MapPart at position {worldPosition}");
-                return default;
+                return;
             }
             
             mPart.Change(mapTileSo);
-            
-            return mPart.MapCon.IsConnectedWithTO();
         }
 
         private void Update()
@@ -172,113 +165,9 @@ namespace VRUEAssignments.Map
                     return currentTry;
                 }
             }
-            // int[] methodOrder = { 1, 2, 3 };
-            // float[] methodWeights = { 1f, 1f, 12f };
-            //
-            // WeightedShuffleArray(methodOrder, methodWeights);
-            // Debug.Log($"MethodOrderArray: {string.Join(", ", methodOrder)}");
-            // Debug.Log($"WeightsArray: {string.Join(", ", methodWeights)}");
-            //
-            // for (int index = 0; index < methodOrder.Length; index++)
-            // {
-            //     int order = methodOrder[index];
-            //     switch (order)
-            //     {
-            //         case 1:
-            //             mPart.Change(MapResourceLoader.GetRandomCornerRightPathSo());
-            //             if (_isNextTileAvailable)
-            //             {
-            //                 return MapResourceLoader.GetRandomCornerRightPathSo();
-            //             }
-            //
-            //             break;
-            //
-            //         case 2:
-            //             mPart.Change(MapResourceLoader.GetRandomCornerLeftPathSo());
-            //             if (_isNextTileAvailable)
-            //             {
-            //                 return MapResourceLoader.GetRandomCornerLeftPathSo();
-            //             }
-            //
-            //             break;
-            //
-            //         case 3:
-            //             mPart.Change(MapResourceLoader.GetRandomStraightPathSo());
-            //             if (_isNextTileAvailable)
-            //             {
-            //                 return MapResourceLoader.GetRandomStraightPathSo();
-            //             }
-            //
-            //             break;
-            //     }
-            // }
-
+            
             Debug.LogWarning("No maptileso found that fits");
             return null;
         }
-        
-        private void WeightedShuffleArray(int[] array, float[] weights)
-        {
-            int n = array.Length;
-            for (int i = n - 1; i > 0; i--)
-            {
-                int j = WeightedRandomIndex(i + 1, weights);
-                (array[i], array[j]) = (array[j], array[i]);
-            }
-        }
-        
-        private int WeightedRandomIndex(int length, float[] weights)
-        {
-            float totalWeight = 0f;
-            for (int i = 0; i < length; i++)
-            {
-                totalWeight += weights[i];
-            }
-        
-            float randomValue = Random.Range(0f, totalWeight);
-            float cumulativeWeight = 0f;
-        
-            for (int i = 0; i < length; i++)
-            {
-                cumulativeWeight += weights[i];
-                if (randomValue <= cumulativeWeight)
-                {
-                    return i;
-                }
-            }
-        
-            return length - 1;
-        }
-        
-        // private void WeightedShuffleArray(int[] array, float[] weights)
-        // {
-        //     int n = array.Length;
-        //
-        //     // Create an array to store the weighted indices
-        //     int[] weightedIndices = new int[n];
-        //
-        //     for (int i = 0; i < n; i++)
-        //     {
-        //         weightedIndices[i] = i;
-        //     }
-        //
-        //     // Sort the weighted indices based on weights in descending order
-        //     System.Array.Sort(weightedIndices, (a, b) => weights[b].CompareTo(weights[a]));
-        //
-        //     // Create a new array to store the shuffled elements
-        //     int[] newArray = new int[n];
-        //
-        //     // Assign the elements in shuffled order
-        //     for (int i = 0; i < n; i++)
-        //     {
-        //         newArray[i] = array[weightedIndices[i]];
-        //     }
-        //
-        //     // Copy the shuffled elements back to the original array
-        //     for (int i = 0; i < n; i++)
-        //     {
-        //         array[i] = newArray[i];
-        //     }
-        // }
     }
 }

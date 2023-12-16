@@ -35,24 +35,12 @@ namespace VRUEAssignments.Utils
 
             return output;
         }
-        
-        
-        private void Update()
-        {
-            if (Input.GetMouseButtonDown(1))
-            {
-                Generate();
-            }
-        }
 
         public T[] Generate()
         {
-            // Generate a combination of values
             T[] combination = GenerateCombination(WeightedValues.Count);
 
-            // Print the generated combination
-            Debug.Log("Generated Combination: " + string.Join(", ", combination));
-
+            // Debug.Log("Generated Combination: " + string.Join(", ", combination));
             return combination;
         }
 
@@ -66,7 +54,6 @@ namespace VRUEAssignments.Utils
             {
                 T randomValue = GetRandomValue(WeightedValues);
                 combination.Add(randomValue);
-                Debug.Log("Iteration nr" + i);
                 if (combination.Count == length)
                 {
                     break;

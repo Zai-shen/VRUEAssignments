@@ -61,7 +61,7 @@ namespace VRUEAssignments.Map
             {
                 MapCon.ToMP = prev;
             }
-            Debug.Log($"ConnectTo: This {MapCon} to other {mapPart.MapCon}");
+            //Debug.Log($"ConnectTo: This {MapCon} to other {mapPart.MapCon}");
             
             return didConnect;
         }
