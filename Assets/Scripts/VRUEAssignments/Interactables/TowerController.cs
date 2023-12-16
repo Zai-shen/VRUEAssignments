@@ -15,6 +15,7 @@ public class TowerController : MonoBehaviour
 
     private Ray ray;
     private bool isCurrentlyShooting;
+    private GameObject lastHitGameObject;
 
     // Start is called before the first frame update
     void Start()
@@ -38,9 +39,15 @@ public class TowerController : MonoBehaviour
             if (Physics.Raycast(ray, out hitData))
             {
                 var hitGameObject = hitData.transform.gameObject;
+                // only hit a game object once!
+                if (lastHitGameObject != null && lastHitGameObject.Equals(hitGameObject))
+                {
+                    return;
+                }
                 EnemyBehaviour enemyBehaviour;
                 if (hitGameObject.TryGetComponent(out enemyBehaviour)) {
                     enemyBehaviour.OnHitByParticle(destroyForce);
+                    lastHitGameObject = hitGameObject;
                 }
             }
         }
