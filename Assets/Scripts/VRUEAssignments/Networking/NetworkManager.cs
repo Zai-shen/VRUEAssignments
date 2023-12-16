@@ -65,7 +65,7 @@ namespace VRUEAssignments.Networking
         {
             if (loaderAnimation == null)
             {
-                Debug.LogError("<Color=red><b>Missing</b></Color> loaderAnimation Reference.", this);
+                //Debug.LogError("<Color=red><b>Missing</b></Color> loaderAnimation Reference.", this);
             }
 
             // #Critical
@@ -120,27 +120,22 @@ namespace VRUEAssignments.Networking
     
         private static void LogFeedback(string message)
         {
-            if (UIManager.Instance == null)
-            {
-                return;
-            }
-
-            UIManager.Instance.DisplayUIMessage(System.Environment.NewLine + message);
+            UIManager.Instance?.DisplayUIMessage(System.Environment.NewLine + message);
         }
 
         private void SpawnPlayer()
         {
             if (playerPrefab == null) {
-                Debug.LogError("<color=red><b>Missing</b></color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
+                //Debug.LogError("<color=red><b>Missing</b></color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
             } else {
                 if (PhotonNetwork.InRoom && PlayerManager.LocalPlayerInstance == null)
                 {
-                    Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
+                    //Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
                     // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
                     Vector3 anitCollisionOffset = new Vector3(0f, 5f, 0f);
                     PhotonNetwork.Instantiate("Prefabs/Core/" + this.playerPrefab.name,  _currentSpawnOffset + anitCollisionOffset, Quaternion.identity, 0);
                 }else{
-                    Debug.LogFormat("Ignoring instantiation in {0} as we already have a player!", SceneManagerHelper.ActiveSceneName);
+                    //Debug.LogFormat("Ignoring instantiation in {0} as we already have a player!", SceneManagerHelper.ActiveSceneName);
                 }
             }
         }
@@ -148,15 +143,15 @@ namespace VRUEAssignments.Networking
         private void SpawnRoad()
         {
             if (roadPrefab == null) {
-                Debug.LogError("<color=red><b>Missing</b></color> roadPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
+                //Debug.LogError("<color=red><b>Missing</b></color> roadPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
             } else {
                 if (PhotonNetwork.InRoom)
                 {
-                    Debug.LogFormat("We are Instantiating LocalRoad from {0}", SceneManagerHelper.ActiveSceneName);
+                    //Debug.LogFormat("We are Instantiating LocalRoad from {0}", SceneManagerHelper.ActiveSceneName);
                     // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
                     PhotonNetwork.Instantiate("Prefabs/Environment/" + this.roadPrefab.name,  _currentSpawnOffset, Quaternion.identity, 0);
                 }else{
-                    Debug.LogFormat("Ignoring instantiation in {0} as we already have a road!", SceneManagerHelper.ActiveSceneName);
+                    //Debug.LogFormat("Ignoring instantiation in {0} as we already have a road!", SceneManagerHelper.ActiveSceneName);
                 }
             }
         }
@@ -177,8 +172,7 @@ namespace VRUEAssignments.Networking
             if (isConnecting)
             {
                 LogFeedback("OnConnectedToMaster: Next -> try to Join Random Room");
-                Debug.Log(
-                    "OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room.\n Calling: PhotonNetwork.JoinRandomRoom(); Operation will fail if no room found");
+                //Debug.Log("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room.\n Calling: PhotonNetwork.JoinRandomRoom(); Operation will fail if no room found");
 
                 // #Critical: The first we try to do is to join a potential existing room. If there is, good, else, we'll be called back with OnJoinRandomFailed()
                 PhotonNetwork.JoinRandomRoom();
@@ -194,8 +188,7 @@ namespace VRUEAssignments.Networking
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
             LogFeedback("<color=red>OnJoinRandomFailed</color>: Next -> Create a new Room");
-            Debug.Log(
-                "OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
+            //Debug.Log("OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
 
             // #Critical: we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
             PhotonNetwork.CreateRoom(null, new RoomOptions {MaxPlayers = this.maxPlayersPerRoom});
@@ -208,7 +201,7 @@ namespace VRUEAssignments.Networking
         public override void OnDisconnected(DisconnectCause cause)
         {
             LogFeedback("<color=red>OnDisconnected</color> " + cause);
-            Debug.LogWarning("Disconnected");
+            //Debug.LogWarning("Disconnected");
 
             // #Critical: we failed to connect or got disconnected. There is not much we can do. Typically, a UI system should be in place to let the user attemp to connect again.
             loaderAnimation.StopLoaderAnimation();
@@ -230,8 +223,7 @@ namespace VRUEAssignments.Networking
         public override void OnJoinedRoom()
         {
             LogFeedback("<color=green>OnJoinedRoom</color> with " + PhotonNetwork.CurrentRoom.PlayerCount + " Player(s)");
-            Debug.Log(
-                "OnJoinedRoom() called by PUN. Now this client is in a room.\nFrom here on, your game would be running.");
+            //Debug.Log("OnJoinedRoom() called by PUN. Now this client is in a room.\nFrom here on, your game would be running.");
 
             // #Critical: We only load if we are the first player, else we rely on  PhotonNetwork.AutomaticallySyncScene to sync our instance scene.
             int users = PhotonNetwork.CurrentRoom.PlayerCount;
@@ -249,7 +241,7 @@ namespace VRUEAssignments.Networking
                 role = ROLE_OBSERVER;
             }
 
-            Debug.Log($"We are {role}");
+            //Debug.Log($"We are {role}");
 
             SpawnPlayer();
             // SpawnRoad();

@@ -1,0 +1,173 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using VRUEAssignments.Utils;
+using Random = UnityEngine.Random;
+
+namespace VRUEAssignments.Map
+{
+    public class Map : MonoBehaviour
+    {
+        public bool DebugInEditor;
+        public Camera TopCamera;
+
+        public Vector3 GridCenter = new Vector3(0, 0, 0);
+        public Vector3Int GridSize = new Vector3Int(25, 1, 25);
+        public float CellSize = 1f;
+
+        public Transform MapTileContainer;
+        public MapTileSO[] MapTileSos;
+
+        private RandomWeightedMapTileSO _randomWeightedMapTileSo;
+        
+        private Grid<MapPart> _gamingAreaGrid;
+
+        private bool _isNextTileAvailable;
+        
+        private void Awake()
+        {
+            MapResourceLoader.Init(MapTileSos);
+            _randomWeightedMapTileSo = GetComponent<RandomWeightedMapTileSO>();
+        }
+
+        private void Start()
+        {
+            _gamingAreaGrid = new Grid<MapPart>(GridSize, CellSize,
+                (grid, pos) => new MapPart(MapResourceLoader.GetEmptySo(), grid, pos, MapTileContainer),
+                GridCenter - GridSize / 2, true);
+            
+            _gamingAreaGrid.OnGridValueChanged += NotifyNeighbours;
+
+            CreateMapTile(GridCenter, MapResourceLoader.GetBaseSo());
+            
+            if (DebugInEditor)
+            {
+                TopCamera.gameObject.SetActive(true);
+            }
+        }
+
+        private void NotifyNeighbours(Vector3Int position)
+        {
+            MapPart mPart = _gamingAreaGrid.GetGridObjectLocal(position);
+            
+            if (mPart.MapTSo.MapTType is MapTileType.TELEPORT or MapTileType.EMPTY or MapTileType.NEXT) return;
+
+            _isNextTileAvailable = false;
+            bool didConnect = false;
+            
+            List<MapPart> neighbours = GetNeighbours(position);
+            foreach (MapPart mP in neighbours)
+            {
+                if (mP.MapTSo.MapTType == MapTileType.EMPTY)
+                {
+                    mP.ChangeSilent(MapResourceLoader.GetRandomTeleportSo());
+                    mP.SetGameObject();
+                }
+                else if (mP.MapTSo.MapTType == MapTileType.TELEPORT)
+                {
+                    continue;
+                }else if (!didConnect)
+                {
+                    didConnect = mPart.ConnectTo(mP);
+                }
+            }
+
+            foreach (MapPart mP in neighbours)
+            {
+                if (mP.MapTSo.MapTType == MapTileType.TELEPORT)
+                {
+                    if (mP.CouldConnectTo(mPart))
+                    {
+                        mP.ChangeSilent(MapResourceLoader.GetNextSo());
+                        mP.SetGameObject();
+                        _isNextTileAvailable = true;
+                        break;
+                    }
+                }
+            }
+
+            if (mPart.MapTSo.MapTType == MapTileType.BASE) return;
+
+            if (!_isNextTileAvailable && !didConnect)
+            {
+                // Debug.LogWarning($"Destroying {mPart.MapPartGo}");
+                mPart.Clear();
+                return;
+            }
+        }
+
+        private List<MapPart> GetNeighbours(Vector3Int position)
+        {
+            List<MapPart> neighbours = new();
+            AddToListIfNotNull(neighbours, position + Vector3Int.left);
+            AddToListIfNotNull(neighbours, position + Vector3Int.forward);
+            AddToListIfNotNull(neighbours, position + Vector3Int.right);
+            AddToListIfNotNull(neighbours, position + Vector3Int.back);
+
+            return neighbours;
+        }
+
+        private void AddToListIfNotNull(List<MapPart> neighbours, Vector3Int position)
+        {
+            MapPart temp =_gamingAreaGrid.GetGridObjectLocal(position);
+            if (temp == null) return;
+            neighbours.Add(temp);
+        }
+
+        private void CreateMapTile(Vector3 worldPosition, MapTileSO mapTileSo)
+        {
+            MapPart mPart = _gamingAreaGrid.GetGridObjectWorld(worldPosition);
+            if (mPart == null)
+            {
+                Debug.LogWarning($"Could not get MapPart at position {worldPosition}");
+                return;
+            }
+            
+            mPart.Change(mapTileSo);
+        }
+
+        private void Update()
+        {
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                Vector3 worldPos;
+                if (DebugInEditor)
+                {
+                    worldPos = TopCamera.ScreenToWorldPoint(new Vector3(Mouse.current.position.value.x, Mouse.current.position.value.y, TopCamera.nearClipPlane));
+                    worldPos.y = GridCenter.y;
+                }
+                else
+                {
+                    //TODO VR implementation 
+                    worldPos = Camera.main.ScreenToWorldPoint(new Vector3(Mouse.current.position.value.x, Mouse.current.position.value.y, Camera.main.nearClipPlane));
+                }
+
+                // Debug.Log($"Mouse pos: {Mouse.current.position.value}");
+                // Debug.Log($"worldPos {worldPos.ToString()}");
+
+                CreateMapTile(worldPos, ChooseMapTileSO(worldPos));
+            }
+        }
+
+        private MapTileSO ChooseMapTileSO(Vector3 worldPos)
+        {
+            MapPart mPart = _gamingAreaGrid.GetGridObjectWorld(worldPos);
+            MapTileSO possibleTile = null;
+
+            MapTileSO[] ordered = _randomWeightedMapTileSo.Generate();
+            for (int index = 0; index < ordered.Length; index++)
+            {
+                MapTileSO currentTry = ordered[index];
+                mPart.Change(currentTry);
+                if (_isNextTileAvailable)
+                {
+                    return currentTry;
+                }
+            }
+            
+            Debug.LogWarning("No maptileso found that fits");
+            return null;
+        }
+    }
+}
