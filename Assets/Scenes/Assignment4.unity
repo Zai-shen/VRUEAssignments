@@ -1932,6 +1932,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1698706427}
   - component: {fileID: 1698706428}
+  - component: {fileID: 1698706429}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -1982,6 +1983,25 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7583b1b50641eec41812be9eb7eb27ac, type: 2}
   - {fileID: 11400000, guid: 967617a721993664ebde957e43514f75, type: 2}
   - {fileID: 11400000, guid: d71a0113afd956049ae8948e2c658f7f, type: 2}
+--- !u!114 &1698706429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1698706426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58c89f5de99b468a97815c67a70ee21b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WeightedValues:
+  - Value: {fileID: 11400000, guid: 7583b1b50641eec41812be9eb7eb27ac, type: 2}
+    Weight: 40
+  - Value: {fileID: 11400000, guid: 967617a721993664ebde957e43514f75, type: 2}
+    Weight: 12
+  - Value: {fileID: 11400000, guid: d71a0113afd956049ae8948e2c658f7f, type: 2}
+    Weight: 8
 --- !u!1001 &1849692611
 PrefabInstance:
   m_ObjectHideFlags: 0
