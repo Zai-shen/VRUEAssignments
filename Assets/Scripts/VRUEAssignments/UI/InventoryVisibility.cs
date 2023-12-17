@@ -9,6 +9,7 @@ public class InventoryVisibility : MonoBehaviour
 
     public InputAction toggleVisibilityAction;
     private bool isVisible = false;
+    public GameObject inventoryHint;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,12 +20,25 @@ public class InventoryVisibility : MonoBehaviour
 
     private void onToggleVisibility(InputAction.CallbackContext context)
     {
-        Debug.Log("Toggle visibility performed!");
+       
         isVisible = !isVisible;
-        Debug.Log("Inventory visible: " + isVisible);
         this.gameObject.SetActive(isVisible);
+        inventoryHint.SetActive(!isVisible);
     }
-   
+    
+    public void OnCloseInventory()
+    {
+        isVisible = false;
+        this.gameObject.SetActive(isVisible);
+        inventoryHint.SetActive(true);
+    }
+
+    public void OnOpenInventory()
+    {
+        isVisible = true;
+        this.gameObject.SetActive(isVisible);
+        inventoryHint.SetActive(false);
+    }
 
     private void OnEnable()
     {

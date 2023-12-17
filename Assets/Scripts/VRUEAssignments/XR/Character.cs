@@ -31,11 +31,11 @@ namespace VRUEAssignments.XR
                 return;
             }
 
-            UpdatePositions();
-            UpdateRotations();
+            //UpdatePositions();
+            //UpdateRotations();
         }
 
-        private void UpdateRotations()
+        private void UpdatePositions()
         {
             Root.position = XRRigReferences.Instance.Root.position;
             Head.position = XRRigReferences.Instance.Head.position;
@@ -43,7 +43,7 @@ namespace VRUEAssignments.XR
             RightHand.position = XRRigReferences.Instance.RightHand.position;
         }
 
-        private void UpdatePositions()
+        private void UpdateRotations()
         {
             Root.rotation = XRRigReferences.Instance.Root.rotation;
             Head.rotation = XRRigReferences.Instance.Head.rotation;

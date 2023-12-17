@@ -8,11 +8,14 @@ namespace VRUEAssignments.NPCs
         private Material objMaterial;
         public Material dieMaterial;
         private MeshRenderer objRenderer;
+        private Animator mAnimator;
+        public int lives;
         // Start is called before the first frame update
         void Start()
         {
-            objRenderer = this.GetComponent<MeshRenderer>();
-            objMaterial =  objRenderer.material;
+            //objRenderer = this.GetComponent<MeshRenderer>();
+            //objMaterial =  objRenderer.material;
+            mAnimator = GetComponent<Animator>();
         }
 
 
@@ -21,10 +24,10 @@ namespace VRUEAssignments.NPCs
         {
         
         }
-
+        
         private void OnTriggerEnter(Collider other)
         {
-            // Debug.Log("Enemy entered collision with " + other.gameObject.name);
+            
 
             if (other.gameObject.name.Equals("ClearArea")) {
                 Destroy(this.gameObject);
@@ -39,24 +42,26 @@ namespace VRUEAssignments.NPCs
 
         }
 
-        private void OnCollisionEnter(Collision collision)
+        public void OnHitByParticle(int damage)
         {
-            if (collision.gameObject.tag.Equals("Bullet"))
-            {
+            Debug.Log("Object" + this.gameObject.name + " got hit with damage " + damage + ". Current lives: " + lives);
+            lives -= damage;
+            if (lives <= 0) {
+                mAnimator.SetTrigger("getShot");
                 StartCoroutine(blinkAndDestroy());
             }
+            else
+            {
+                mAnimator.SetTrigger("getHit");
+            }
+            
+           
         }
 
         IEnumerator blinkAndDestroy()
         {
-            objRenderer.material = dieMaterial;
-            yield return new WaitForSeconds(0.3f);
-            objRenderer.material = objMaterial;
-            yield return new WaitForSeconds(0.3f);
-            objRenderer.material = dieMaterial;
-            yield return new WaitForSeconds(0.3f);
-            objRenderer.material = objMaterial;
-            yield return new WaitForSeconds(0.3f);
+            var length = mAnimator.GetCurrentAnimatorClipInfo(0).Length;
+            yield return new WaitForSeconds(length);
             Destroy(this.gameObject);
         }
     }
