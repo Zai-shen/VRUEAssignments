@@ -26,19 +26,22 @@ namespace VRUEAssignments.NPCs
             time += Time.deltaTime;
             if (time >= spawnInterval)
             {
-                counter = counter % enemies.Count;
-                Debug.Log("Currently there are " + enemies.Count + " enemies available, counter is " +  counter);
-                
-                if (enemies.Count != 0)
+                if (enemies.Count > 0)
                 {
-                    var enemy = enemies[counter];
-                    var newObject = Instantiate(enemy, transform.position + transform.forward.normalized * 0.1f, Quaternion.identity);
-                    //newObject.transform.parent = transform;
+                    counter = counter % enemies.Count;
+                    Debug.Log("Currently there are " + enemies.Count + " enemies available, counter is " + counter);
+
+                    if (enemies.Count != 0)
+                    {
+                        var enemy = enemies[counter];
+                        var newObject = Instantiate(enemy, transform.position + transform.forward.normalized * 0.1f,
+                            Quaternion.identity);
+                        //newObject.transform.parent = transform;
+                    }
+
+                    time = 0;
+                    counter++;
                 }
-
-                time = 0;
-                counter++;
-
             }
             
         }

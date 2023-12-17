@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -10,6 +11,10 @@ namespace VRUEAssignments.Map
         public MapTileSO MapTileSo;
 
         [SerializeField] private float _cellSize;
+        [SerializeField] private string _navigationName = "Navigation";
+        [SerializeField] private string _entryName = "Entry";
+        [SerializeField] private string _exitName = "Exit";
+        [SerializeField] private string _midName = "Mid";
         
         private GameObject _mesh;
         
@@ -38,6 +43,28 @@ namespace VRUEAssignments.Map
         public void SetSize(float size)
         {
             _cellSize = size;
+        }
+
+        public List<Vector3> GetPathEntryToExit()
+        {
+            List<Vector3> positions = new();
+
+            Transform child = transform.GetChild(0);
+            if (child == null) return positions;
+
+            Transform navigation = child.Find(_navigationName);
+            if (navigation == null) return positions;
+
+            Transform entry = navigation.Find(_entryName);
+            if (entry != null) positions.Add(entry.position);
+
+            Transform mid = navigation.Find(_midName);
+            if (mid != null) positions.Add(mid.position);
+
+            Transform exit = navigation.Find(_exitName);
+            if (exit != null) positions.Add(exit.position);
+            
+            return positions;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 using VRUEAssignments.NPCs;
+using VRUEAssignments.NPCs.Enemies;
 
 public class TowerController : MonoBehaviour
 {
@@ -47,6 +48,11 @@ public class TowerController : MonoBehaviour
                 EnemyBehaviour enemyBehaviour;
                 if (hitGameObject.TryGetComponent(out enemyBehaviour)) {
                     enemyBehaviour.OnHitByParticle(destroyForce);
+                    lastHitGameObject = hitGameObject;
+                }
+                Enemy enemy; 
+                if (hitGameObject.TryGetComponent(out enemy)) {
+                    enemy.OnHitByParticle(destroyForce);
                     lastHitGameObject = hitGameObject;
                 }
             }
