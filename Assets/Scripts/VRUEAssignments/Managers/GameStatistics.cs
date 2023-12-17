@@ -9,7 +9,6 @@ namespace VRUEAssignments.Managers
         public static int HolesHit = 0;
         public static int CueHits = 0;
 
-
         public static void Reset()
         {
             StartTime = DateTime.UtcNow;
