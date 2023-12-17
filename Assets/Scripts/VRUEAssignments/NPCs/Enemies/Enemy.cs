@@ -66,9 +66,10 @@ namespace VRUEAssignments.NPCs.Enemies
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.name.Equals("ClearArea"))
+            if (other.CompareTag("Base"))
             {
                 Die();
+                //TODO Deal Damage
             }
         }
 

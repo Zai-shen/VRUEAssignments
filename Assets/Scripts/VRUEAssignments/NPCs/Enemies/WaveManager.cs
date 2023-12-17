@@ -10,9 +10,12 @@ namespace VRUEAssignments.NPCs.Enemies
     {
         public EnemySpawner AEnemySpawner;
         public SplineComputer SplineToFollow;
+        public Map.Map GameMap; 
         public List<GameObject> InstantiatedEnemies = new();
         
         public Action WaveSpawned;
+
+        private bool _canSpawn;
 
         [SerializeField] private EnemyKind _enemyKind = EnemyKind.DRAGON;
         
@@ -26,22 +29,29 @@ namespace VRUEAssignments.NPCs.Enemies
         private void OnEnable()
         {
             AEnemySpawner.EnemySpawned += OnEnemySpawned;
+            GameMap.NewTileSpawned += SpawnWave;
+            GameMap.MapInitialized += ToggleCanSpawn;
         }
         
         private void OnDisable()
         {
             AEnemySpawner.EnemySpawned -= OnEnemySpawned;
+            GameMap.NewTileSpawned -= SpawnWave;
+            GameMap.MapInitialized -= ToggleCanSpawn;
         }
 
-        private void Start()
+        private void ToggleCanSpawn()
         {
-            SpawnWave();
+            _canSpawn = !_canSpawn;
         }
 
         public void SpawnWave()
         {
-            AEnemySpawner.CurrentKind = _enemyKind;
-            StartCoroutine(Spawn(SplineToFollow, _currentWaveSize));
+            if (_canSpawn)
+            {
+                AEnemySpawner.CurrentKind = _enemyKind;
+                StartCoroutine(Spawn(SplineToFollow, _currentWaveSize));
+            }
         }
 
         private void CleanUp()

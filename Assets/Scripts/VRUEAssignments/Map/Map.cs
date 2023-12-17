@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Dreamteck.Splines;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using VRUEAssignments.NPCs.Enemies;
 using VRUEAssignments.Utils;
 using Random = UnityEngine.Random;
 
@@ -19,6 +22,10 @@ namespace VRUEAssignments.Map
         public Transform MapTileContainer;
         public MapTileSO[] MapTileSos;
 
+        public SplineComputer Spline;
+        public Action NewTileSpawned;
+        public Action MapInitialized;
+        
         private RandomWeightedMapTileSO _randomWeightedMapTileSo;
         
         private Grid<MapPart> _gamingAreaGrid;
@@ -41,6 +48,8 @@ namespace VRUEAssignments.Map
             _gamingAreaGrid.OnGridValueChanged += NotifyNeighbours;
 
             CreateMapTile(GridCenter, MapResourceLoader.GetBaseSo());
+            CreateMapTile(GridCenter + Vector3.left, MapResourceLoader.GetRandomStraightPathSo());
+            MapInitialized?.Invoke();
             
             if (DebugInEditor)
             {
@@ -126,6 +135,43 @@ namespace VRUEAssignments.Map
             }
             
             mPart.Change(mapTileSo);
+
+            if (mapTileSo.MapTType is MapTileType.BASE or MapTileType.PATH)
+            {
+                AddToPath(mPart.MapTile.GetPathEntryToExit());
+            }
+        }
+
+        private void AddToPath(List<Vector3> pathPositions)
+        {
+            if (pathPositions.Count == 0)
+            {
+                return;
+            }
+            
+            SplinePoint[] points = Spline.GetPoints();
+            int oldLength = points.Length;
+            int newLength = oldLength + pathPositions.Count;
+            SplinePoint[] newPoints = new SplinePoint[newLength];
+            List<SplinePoint> pathPoints = new();
+
+            foreach (Vector3 position in pathPositions)
+            {
+                SplinePoint temp = new SplinePoint();
+                temp.position = position;
+                temp.normal = Vector3.up;
+                // temp.size = 1f;
+                // temp.color = Color.white;
+                
+                pathPoints.Add(temp);
+            }
+            
+            pathPoints.CopyTo(newPoints, 0);
+            Array.Copy(points, 0, newPoints, pathPoints.Count, oldLength);
+            
+            Spline.SetPoints(newPoints);
+            
+            NewTileSpawned?.Invoke();
         }
 
         private void Update()
