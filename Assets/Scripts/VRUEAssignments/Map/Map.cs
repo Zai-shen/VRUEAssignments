@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 namespace VRUEAssignments.Map
 {
-    public class Map : MonoBehaviour
+    public class Map : UnitySingleton<Map>
     {
         public bool DebugInEditor;
         public Camera TopCamera;
@@ -24,9 +24,10 @@ namespace VRUEAssignments.Map
         private Grid<MapPart> _gamingAreaGrid;
 
         private bool _isNextTileAvailable;
-        
-        private void Awake()
+
+        protected override void Awake()
         {
+            base.Awake();
             MapResourceLoader.Init(MapTileSos);
             _randomWeightedMapTileSo = GetComponent<RandomWeightedMapTileSO>();
         }
@@ -35,7 +36,7 @@ namespace VRUEAssignments.Map
         {
             _gamingAreaGrid = new Grid<MapPart>(GridSize, CellSize,
                 (grid, pos) => new MapPart(MapResourceLoader.GetEmptySo(), grid, pos, MapTileContainer),
-                GridCenter - GridSize / 2, true);
+                GridCenter - GridSize / 2, DebugInEditor);
             
             _gamingAreaGrid.OnGridValueChanged += NotifyNeighbours;
 
@@ -129,25 +130,25 @@ namespace VRUEAssignments.Map
 
         private void Update()
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame)
+            if (DebugInEditor)
             {
-                Vector3 worldPos;
-                if (DebugInEditor)
+                if (Mouse.current.leftButton.wasPressedThisFrame)
                 {
-                    worldPos = TopCamera.ScreenToWorldPoint(new Vector3(Mouse.current.position.value.x, Mouse.current.position.value.y, TopCamera.nearClipPlane));
+                    Vector3 worldPos = TopCamera.ScreenToWorldPoint(
+                        new Vector3(Mouse.current.position.value.x, Mouse.current.position.value.y,
+                            TopCamera.nearClipPlane));
                     worldPos.y = GridCenter.y;
+                    // Debug.Log($"Mouse pos: {Mouse.current.position.value}");
+                    PlaceMapTile(worldPos);
                 }
-                else
-                {
-                    //TODO VR implementation 
-                    worldPos = Camera.main.ScreenToWorldPoint(new Vector3(Mouse.current.position.value.x, Mouse.current.position.value.y, Camera.main.nearClipPlane));
-                }
-
-                // Debug.Log($"Mouse pos: {Mouse.current.position.value}");
-                // Debug.Log($"worldPos {worldPos.ToString()}");
-
-                CreateMapTile(worldPos, ChooseMapTileSO(worldPos));
             }
+        }
+
+        public void PlaceMapTile(Vector3 worldPos)
+        {
+            //TODO VR implementation 
+            // Debug.Log($"worldPos {worldPos.ToString()}");
+            CreateMapTile(worldPos, ChooseMapTileSO(worldPos));
         }
 
         private MapTileSO ChooseMapTileSO(Vector3 worldPos)
