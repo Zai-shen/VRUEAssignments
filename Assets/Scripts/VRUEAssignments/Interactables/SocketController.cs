@@ -34,7 +34,7 @@ public class SocketController: MonoBehaviour
 
     public void OnSelectEntered()
     {
-        Debug.Log("Some object entered the socket");
+        //Debug.Log("Some object entered the socket");
         var allSelectedInteractables = socketInteractor.interactablesSelected;
         if (allSelectedInteractables.Count == 1)
         {
@@ -47,7 +47,7 @@ public class SocketController: MonoBehaviour
 
     public void OnSelectExited()
     {
-        Debug.Log("Some object exited the socket");
+        //Debug.Log("Some object exited the socket");
         ToggleCannonBallShooting(false);
     }
 
@@ -56,11 +56,11 @@ public class SocketController: MonoBehaviour
 
         if (selectedGameObject == null)
         {
-            Debug.Log("Error last interacted object is null");
+            //Debug.Log("Error last interacted object is null");
             return;
         }
         var towerController = selectedGameObject.GetComponent<TowerController>();
-        Debug.Log("Interactable in socket: " + selectedGameObject.transform.gameObject.name);
+        //Debug.Log("Interactable in socket: " + selectedGameObject.transform.gameObject.name);
         if (towerController != null)
         {
             towerController.ToggleCannonBallMovement(isEnabled);

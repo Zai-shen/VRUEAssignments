@@ -61,6 +61,9 @@ public class TowerController : MonoBehaviour
 
     public void ToggleCannonBallMovement(bool enable)
     {
+        if (!gameObject.activeInHierarchy) return;
+
+            
         isCurrentlyShooting = enable;
         StartCoroutine(WaitAndControlParticles(enable));
         
@@ -77,11 +80,11 @@ public class TowerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Entered collisiton with " + other.gameObject.name);
+        //Debug.Log("Entered collisiton with " + other.gameObject.name);
         if (other.gameObject.name.Equals("Inventory"))
         {
           
-            Debug.Log("Scaling to inventory scale (small)");
+            //Debug.Log("Scaling to inventory scale (small)");
             this.transform.localScale = new Vector3(inventoryScale, inventoryScale, inventoryScale);
 
         }
@@ -89,11 +92,11 @@ public class TowerController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("Exited collisiton with " + other.gameObject.name);
+        //Debug.Log("Exited collisiton with " + other.gameObject.name);
         if (other.gameObject.name.Equals("Inventory"))
         {
            
-            Debug.Log("Scaling to world scale (large)");
+            //Debug.Log("Scaling to world scale (large)");
             this.transform.localScale = new Vector3(worldScale, worldScale, worldScale);
         }
     

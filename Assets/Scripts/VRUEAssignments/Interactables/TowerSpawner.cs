@@ -45,7 +45,7 @@ public class TowerSpawner : MonoBehaviour
             var newObject = Instantiate(tower, placeHolder.transform.position, placeHolder.transform.rotation);
             newObject.transform.SetParent(placeHolder.transform);
         }
-        Debug.Log("Not spawning, bc place is already used!");
+        //Debug.Log("Not spawning, bc place is already used!");
         
     }
 }

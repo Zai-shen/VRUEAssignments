@@ -47,7 +47,7 @@ public class InventoryVisibility : MonoBehaviour
 
     private void OnDisable()
     {
-        Debug.Log("Disable called!");
+        //Debug.Log("Disable called!");
         toggleVisibilityAction.Disable();
     }
 }
