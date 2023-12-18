@@ -27,12 +27,14 @@ namespace VRUEAssignments.XR
         {
             // Prevent control is connected to Photon and represent the localPlayer
             if( photonView.IsMine == false && PhotonNetwork.IsConnected == true )
-            {
                 return;
-            }
 
-            //UpdatePositions();
-            //UpdateRotations();
+            // Check for XRRigReferences
+            if (XRRigReferences.Instance == null)
+                return;
+
+            UpdatePositions();
+            UpdateRotations();
         }
 
         private void UpdatePositions()
