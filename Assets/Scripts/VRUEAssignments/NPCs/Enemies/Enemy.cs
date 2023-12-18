@@ -2,6 +2,7 @@
 using System.Collections;
 using Dreamteck.Splines;
 using UnityEngine;
+using VRUEAssignments.UI;
 
 namespace VRUEAssignments.NPCs.Enemies
 {
@@ -11,7 +12,12 @@ namespace VRUEAssignments.NPCs.Enemies
         private SplineFollower _splineFollower;
         private Animator _animator;
 
-        [SerializeField] private int _healthPoints = 5;
+        [SerializeField] private HealthBar _healthBar;
+        [SerializeField] private Transform _meshes;
+        
+        
+        [SerializeField] private int _maxHealthPoints = 5;
+        [SerializeField] private int _currentHealthPoints = 5;
         [SerializeField] private int _damage = 2;
         [SerializeField] private float _followSpeed = 0.2f;
 
@@ -96,34 +102,36 @@ namespace VRUEAssignments.NPCs.Enemies
 
         private void ChangeStats(int hp, int dmg)
         {
-            _healthPoints = hp;
+            _maxHealthPoints = hp;
+            _currentHealthPoints = hp;
+            _healthBar.UpdateHealthBar(_maxHealthPoints, _currentHealthPoints);
             _damage = dmg;
         }
         
         private void ChangeSkin(EnemyKind kind)
         {
-            Utils.Utils.SetAllChildren(gameObject, false);
+            Utils.Utils.SetAllChildren(_meshes.gameObject, false);
 
             GameObject temp;
             switch (kind)
             {
                 case EnemyKind.DRAGON:
-                    temp = transform.Find("DragonMesh").gameObject;
+                    temp = _meshes.Find("DragonMesh").gameObject;
                     break;
                 case EnemyKind.GOLEM:
-                    temp = transform.Find("GolemMesh").gameObject;
+                    temp = _meshes.Find("GolemMesh").gameObject;
                     break;
                 case EnemyKind.SKELETON:
-                    temp = transform.Find("SkeletonMesh").gameObject;
+                    temp = _meshes.Find("SkeletonMesh").gameObject;
                     break;
                 case EnemyKind.SPIDER:
-                    temp = transform.Find("SpiderMesh").gameObject;
+                    temp = _meshes.Find("SpiderMesh").gameObject;
                     break;
                 case EnemyKind.TURTLE:
-                    temp = transform.Find("TurtleShellMesh").gameObject;
+                    temp = _meshes.Find("TurtleShellMesh").gameObject;
                     break;
                 case EnemyKind.MAGE:
-                    temp = transform.Find("EvilMageMesh").gameObject;
+                    temp = _meshes.Find("EvilMageMesh").gameObject;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(kind), kind, null);
@@ -152,8 +160,14 @@ namespace VRUEAssignments.NPCs.Enemies
 
         public void OnHitByParticle(int damage)
         {
-            _healthPoints -= damage;
-            if (_healthPoints <= 0)
+            TakeDamage(damage);
+        }
+
+        private void TakeDamage(int damage)
+        {
+            _currentHealthPoints -= damage;
+            _healthBar.UpdateHealthBar(_maxHealthPoints, _currentHealthPoints);
+            if (_currentHealthPoints <= 0)
             {
                 DieAndStop();
             }
@@ -181,6 +195,5 @@ namespace VRUEAssignments.NPCs.Enemies
             yield return new WaitForSeconds(duration);
             Destroy(this.gameObject);
         }
-        
     }
 }
